@@ -1,0 +1,20 @@
+{
+  "organic": [
+    {
+      "title": "Freshworks Careers — Open Roles, Bangalore & Chennai",
+      "link": "https://careers.freshworks.com/jobs",
+      "snippet": "Freshworks (NASDAQ: FRSH) is hiring across Engineering, Product, Sales. Currently 47 open roles in India: 28 Bangalore, 12 Chennai, 7 remote. Engineering bands: SDE-1 ₹16-22 LPA, SDE-2 ₹22-32 LPA, Senior ₹32-50 LPA.",
+      "date": "2026-04-18",
+      "source": "freshworks-careers",
+      "position": 1
+    },
+    {
+      "title": "Freshworks LinkedIn — Recent Hires, Engineering Headcount",
+      "link": "https://www.linkedin.com/company/freshworks/people",
+      "snippet": "Freshworks shows 5,800+ employees on LinkedIn (Dec 2025). Engineering org ~2,400. Hired 312 SWEs in FY25 — 41% from Tier-1 NIRF colleges, 27% from Tier-2.",
+      "date": "2026-01-10",
+      "source": "linkedin",
+      "position": 2
+    }
+  ]
+}

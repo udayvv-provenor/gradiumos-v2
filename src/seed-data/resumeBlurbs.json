@@ -1,0 +1,74 @@
+{
+  "perCluster": {
+    "C1": [
+      "Profiled a production Node.js service and reduced p95 latency 38% by eliminating a recursive JSON traversal and adding request-level caching.",
+      "Authored the data-model refactor for a 12-table reporting schema, cutting average query plan cost 52% under load.",
+      "Hardened concurrency in a background job runner; eliminated a class of lost-update bugs that had caused 3 P2 incidents.",
+      "Built a graph-traversal module that replaced an O(n^2) lookup with O(n log n), unblocking a 4x fan-out on daily exports."
+    ],
+    "C2": [
+      "Solved 150+ algorithmic problems on competitive judges; placed in the top 8% of a nation-wide coding contest.",
+      "Designed a DP-based scheduler that reduced end-to-end job runtime from 48 minutes to 11 minutes.",
+      "Wrote a greedy-assignment heuristic used in production for daily task dispatch, raising completion rate from 72% to 89%.",
+      "Implemented a backtracking solver for a constraint-heavy matching problem with 30k rows; achieved 99th-percentile time under 1.2s."
+    ],
+    "C3": [
+      "Led the rollout of a feature-flagged payments migration; zero rollbacks across 14 progressive releases.",
+      "Cut median PR review time from 3 days to 14 hours by introducing CODEOWNERS and a lightweight design-doc template.",
+      "Owned a CI/CD pipeline running 1,400 tests per merge; reduced flakiness rate from 4.1% to 0.6%.",
+      "Debugged a production memory leak that was OOM-killing pods every 6 hours; root cause shipped with a regression test."
+    ],
+    "C4": [
+      "Designed and shipped a message-driven order-cancellation flow processing 220k events/day with at-least-once semantics.",
+      "Proposed a read-your-writes session pin that resolved 8 weeks of 'my settings didn't save' support tickets.",
+      "Authored an architecture decision record for migrating from SQS to Kafka; adopted across 4 services.",
+      "Sharded a hot table by customer_id with consistent hashing; reduced p99 read latency 64% during peak load."
+    ],
+    "C5": [
+      "Drove the decision doc that consolidated 3 competing internal API-client libraries into one; adopted by 9 teams in a quarter.",
+      "Owned cross-team status updates for a 6-month migration; recognised by the CTO for clarity of weekly summaries.",
+      "Facilitated weekly architecture reviews across product, infra and security; produced structured notes consumed by 40+ engineers.",
+      "Wrote customer-facing post-mortems for 5 incidents; no repeat escalations from the same customer for 9 months after."
+    ],
+    "C6": [
+      "Built a feature-engineering pipeline for tabular customer-risk data; moved AUC from 0.72 to 0.81 and lifted recall 18 points.",
+      "Shipped an interpretable tree-ensemble model to production with SHAP-based per-case explanations for operations teams.",
+      "Led a security review that uncovered 3 medium-severity issues pre-launch; each patched with an automated regression check.",
+      "Designed a vendor-schema validation layer for a 40-source ETL; nightly failures dropped from 14% to under 1%."
+    ],
+    "C7": [
+      "Volunteered as incident commander for 7 P1 incidents; average time-to-mitigate reduced 32% quarter-over-quarter.",
+      "Proposed, scoped and delivered a documentation consolidation initiative across 6 services — zero manager prompts required.",
+      "Took ownership of an on-call rotation mid-quarter; rewrote runbooks for the top-10 alerts, cutting pager volume 41%.",
+      "Called a go/no-go on a risky launch 48 hours before the window; saved the team a weekend of rollback work."
+    ],
+    "C8": [
+      "Learned Rust in 6 weeks to contribute a production-grade parser module, mentored by a principal engineer via weekly reviews.",
+      "Moved from backend to ML infra inside two quarters; first solo launch landed on schedule with no P1 incidents.",
+      "Requested and acted on structured feedback every 2 weeks for a year; promotion panel cited the visible trajectory.",
+      "Picked up Kafka and Debezium cold for a CDC project; shipped the first end-to-end pipeline in 4 weeks."
+    ]
+  },
+  "perTrack": {
+    "SWE": {
+      "headlineTemplate": "Software Engineer — {institution} · Track {cohort}",
+      "summaryTemplate": "Engineer with a strong Core-Tech and Problem-Solving profile; ships to production with high reliability and a bias toward measurable outcomes. Recent focus: {focus}."
+    },
+    "DATA": {
+      "headlineTemplate": "Data Scientist — {institution} · Track {cohort}",
+      "summaryTemplate": "Data practitioner comfortable end-to-end: from feature design to production monitoring. Strongest in tabular modelling and interpretable deployments. Recent focus: {focus}."
+    },
+    "OPS": {
+      "headlineTemplate": "Operations Analyst — {institution} · Track {cohort}",
+      "summaryTemplate": "Operations-minded builder who turns process chaos into measurable throughput. Strongest in ownership and reliability; comfortable owning a daily runbook. Recent focus: {focus}."
+    },
+    "FINTECH": {
+      "headlineTemplate": "FinTech Engineer — {institution} · Track {cohort}",
+      "summaryTemplate": "Payments-literate engineer with solid fundamentals and a careful approach to correctness under load. Comfortable at the boundary of code, compliance, and financial data. Recent focus: {focus}."
+    },
+    "CUSTSUCCESS": {
+      "headlineTemplate": "Customer Success Associate — {institution} · Track {cohort}",
+      "summaryTemplate": "Customer-facing problem-solver who pairs communication strength with technical fluency. Turns escalations into structured follow-up. Recent focus: {focus}."
+    }
+  }
+}

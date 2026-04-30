@@ -1,0 +1,37 @@
+[
+  {
+    "label": "fresh_single_attempt",
+    "scoreWeightedInput": [80],
+    "confidenceInput": { "completeness": 0.5, "stability": 0.6, "sufficiency": 0.33, "consistency": 0.9 },
+    "expectedScoreWeighted": 80,
+    "expectedConfidence": 0.556
+  },
+  {
+    "label": "two_improving_attempts",
+    "scoreWeightedInput": [60, 80],
+    "confidenceInput": { "completeness": 0.8, "stability": 0.8, "sufficiency": 0.67, "consistency": 0.85 },
+    "expectedScoreWeighted": 71.111,
+    "expectedConfidence": 0.7815
+  },
+  {
+    "label": "three_chronological",
+    "scoreWeightedInput": [50, 60, 80],
+    "confidenceInput": { "completeness": 1.0, "stability": 0.7, "sufficiency": 1.0, "consistency": 0.78 },
+    "expectedScoreWeighted": 65.574,
+    "expectedConfidence": 0.877
+  },
+  {
+    "label": "declining_scores",
+    "scoreWeightedInput": [90, 70, 50],
+    "confidenceInput": { "completeness": 1.0, "stability": 0.5, "sufficiency": 1.0, "consistency": 0.6 },
+    "expectedScoreWeighted": 67.049,
+    "expectedConfidence": 0.79
+  },
+  {
+    "label": "suppressed_low_confidence",
+    "scoreWeightedInput": [55],
+    "confidenceInput": { "completeness": 0.125, "stability": 0.0, "sufficiency": 0.33, "consistency": 0.9 },
+    "expectedScoreWeighted": 55,
+    "expectedConfidence": 0.245
+  }
+]

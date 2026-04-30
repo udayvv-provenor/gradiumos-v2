@@ -1,0 +1,16 @@
+{
+  "subtopicCode": "C1.BIG-O",
+  "title": "Big-O Analysis",
+  "subtitle": "C1 — How fast your code is on data sizes you've never seen",
+  "estimatedReadMinutes": 9,
+  "markdown": "## Why this matters\n\nYour code runs fine on 1,000 records. Then production data is 10 million. Now it doesn't run at all — or it crashes the database, or the page never loads. You didn't write a bug; you wrote an **algorithm whose cost grows with the input** in a shape you didn't think about.\n\nBig-O notation is the shared vocabulary that engineers use to describe that growth shape, *before* the data gets large. It is the difference between an interview answer like \"my function works\" and \"my function is O(n log n) — sort first, then a single pass.\"\n\nIf you can name the Big-O of your own code, you can predict whether it will survive scale. That's the entire reason this concept exists.\n\n## The four families you'll see 90% of the time\n\n1. **O(1) — constant.** Hash-map lookup. Dictionary access. Doesn't care how big the data is.\n2. **O(log n) — logarithmic.** Binary search. Database B-tree index hit. Halves the problem each step.\n3. **O(n) — linear.** Single loop over the input. Most reasonable code.\n4. **O(n²) — quadratic.** Nested loop. Fine on 100 items; deadly on 100,000.\n\nThere are others (O(n log n) for good sorts, O(2ⁿ) for naive recursion) — but if you confidently identify these four, you're already past the bar in most code reviews.\n\n## How to read your own code for Big-O\n\nThe rule is mechanical:\n- A single pass through the input → O(n).\n- A loop inside a loop, both over the input → O(n²).\n- A binary search or balanced-tree lookup → O(log n).\n- Constant work (no loops, no recursion) → O(1).\n- Dominant term wins. O(n) + O(log n) is just **O(n)** — drop the smaller term.\n\nWhen you see `array.includes(x)` inside a loop over `array`, that's O(n²) — `.includes` is a hidden linear scan. The fix is almost always: build a `Set` once (O(n)), then check membership in O(1).\n\n## The real-world test\n\nBefore you call something \"done\", ask yourself two questions:\n\n1. **What's the largest n this might see in production?** (Not today's n. Six months from now.)\n2. **How does my function's runtime grow as n grows?**\n\nIf the answer to (2) is \"I don't know\" — you've shipped a future incident. Find out before merging.\n\n> **Heuristic:** If your code works on 100 inputs but you've never tried 100,000, you don't know if it works.\n",
+  "diagrams": [
+    {
+      "type": "mermaid",
+      "caption": "Growth-rate intuition — same input, vastly different cost as n grows",
+      "source": "graph LR\n    N[Input size grows] --> A[\"O(1) Constant\"]\n    N --> B[\"O(log n) Logarithmic\"]\n    N --> C[\"O(n) Linear\"]\n    N --> D[\"O(n^2) Quadratic\"]\n    A --> OK[Ships fine]\n    B --> OK\n    C --> OK\n    D --> BAD[Production incident]\n    style A fill:#86efac\n    style B fill:#86efac\n    style C fill:#fde68a\n    style D fill:#fca5a5\n    style OK fill:#dcfce7\n    style BAD fill:#fee2e2"
+    }
+  ],
+  "tutorOpener": "Let's start with a quick sanity check: can you describe one piece of code from a recent project, and tell me what its Big-O is — and how confident you are in that answer?",
+  "authored": true
+}

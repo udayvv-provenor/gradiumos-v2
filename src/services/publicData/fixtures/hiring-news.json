@@ -1,0 +1,32 @@
+{
+  "news": [
+    {
+      "title": "AI/ML hiring up 23% YoY in India tech, Series-B+ startups driving demand",
+      "link": "https://inc42.com/buzz/ai-ml-hiring-india-2026",
+      "snippet": "Hiring for AI/ML roles in India is up 23% year-on-year per LinkedIn data, with Series-B+ startups accounting for 41% of net new positions. Mid-career engineers (3-7 years) seeing the strongest demand, salary bands up 15-22% for proven AI builders.",
+      "date": "2026-04-15",
+      "source": "inc42"
+    },
+    {
+      "title": "Tech hiring in India bounces back: ET-Naukri Index hits 18-month high",
+      "link": "https://economictimes.indiatimes.com/tech/tech-hiring-2026-comeback",
+      "snippet": "The ET-Naukri JobSpeak Index for technology hiring touched its highest level in 18 months in April 2026, led by demand at fintech, AI-native startups, and product unicorns. Senior roles (5+ years) leading the rebound; entry-level still soft post-2024 layoffs.",
+      "date": "2026-04-10",
+      "source": "economictimes"
+    },
+    {
+      "title": "Indian fintech firms ramp up backend, infra hiring as RBI tightens compliance",
+      "link": "https://www.livemint.com/companies/news/fintech-hiring-2026",
+      "snippet": "PhonePe, Razorpay, Cred, and Pine Labs collectively added 2,400+ backend and infra engineering roles in Q1 2026, driven by RBI compliance requirements + scaling pressure. Median package ₹28-34 LPA for senior backend engineers.",
+      "date": "2026-04-08",
+      "source": "livemint"
+    },
+    {
+      "title": "Mass-recruiter shops see CSE intake fall 18% as product cos pick top quartile early",
+      "link": "https://inc42.com/buzz/mass-recruiter-cse-intake-2026",
+      "snippet": "TCS, Infosys, Wipro, and Cognizant collectively reduced CSE campus intake by 18% YoY in 2024-25 cohort. Top-quartile CSE talent increasingly picked off by product unicorns + Series-B startups in pre-placement offers, leaving mass-recruiters with second-tier options.",
+      "date": "2026-03-28",
+      "source": "inc42"
+    }
+  ]
+}

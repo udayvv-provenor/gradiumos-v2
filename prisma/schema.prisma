@@ -1,0 +1,882 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Institution {
+  id             String                  @id @default(cuid())
+  name           String
+  // v3.1 — institution `type` is metadata, not user-asked. Defaults to
+  // 'higher-ed'; can be derived later from AISHE category if we ever care.
+  type           String                  @default("higher-ed")
+  planName       String                  @default("Institutional")
+  planValidUntil DateTime
+  planFeatures   String[]                @default([])
+  // v3 — public invite code shown to institution admins; learners use this at signup
+  inviteCode     String                  @unique
+  // v3 Phase A — KYC + public data fields
+  kycStatus      String                  @default("Pending")  // Pending | Verified | Rejected
+  nirfRank       Int?
+  naacGrade      String?
+  aisheCode      String?
+  createdAt      DateTime                @default(now())
+  updatedAt      DateTime                @updatedAt
+  programmes     AugmentationProgramme[]
+  cohorts        Cohort[]
+  curricula      Curriculum[]
+  indexVersions  IndexVersion[]
+  learners       Learner[]
+  tracks         Track[]
+  users          User[]
+
+  @@index([name])
+  @@index([inviteCode])
+}
+
+// v3 — uploaded curriculum doc + AI-extracted C1–C8 mapping
+model Curriculum {
+  id             String       @id @default(cuid())
+  institutionId  String
+  careerTrackId  String
+  rawText        String       @db.Text
+  // {C1: 0.0..1.0, C2: ..., ..., C8: ...} — overall coverage by cluster
+  clusterCoverage Json
+  // [{ name, clusters: ['C1','C3'], coverage: 0..1 }, ...]
+  subjects       Json
+  source         String       // 'paste' | 'pdf'
+  fileName       String?
+  uploadedById   String
+  uploadedAt     DateTime     @default(now())
+  // v3 Phase A — optimistic concurrency
+  version        Int          @default(1)
+  institution    Institution  @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  careerTrack    CareerTrack  @relation(fields: [careerTrackId], references: [id], onDelete: Cascade)
+
+  @@index([institutionId, careerTrackId])
+}
+
+model User {
+  id            String         @id @default(cuid())
+  institutionId String?
+  email         String         @unique
+  passwordHash  String
+  name          String
+  role          Role
+  lastLoginAt   DateTime?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  employerId    String?
+  learnerId     String?        @unique
+  refreshTokens RefreshToken[]
+  employer      Employer?      @relation(fields: [employerId], references: [id], onDelete: Cascade)
+  institution   Institution?   @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  learner       Learner?       @relation(fields: [learnerId], references: [id])
+
+  @@index([institutionId])
+  @@index([employerId])
+  @@index([learnerId])
+}
+
+model RefreshToken {
+  id         String    @id @default(cuid())
+  userId     String
+  tokenHash  String    @unique
+  issuedAt   DateTime  @default(now())
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  replacedBy String?
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model IndexVersion {
+  id            String      @id @default(cuid())
+  institutionId String
+  versionTag    String
+  effectiveFrom DateTime
+  locked        Boolean     @default(true)
+  weights       Json
+  thresholds    Json
+  createdAt     DateTime    @default(now())
+  cohorts       Cohort[]
+  institution   Institution @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+
+  @@unique([institutionId, versionTag])
+  @@index([institutionId])
+}
+
+model Track {
+  id            String       @id @default(cuid())
+  institutionId String
+  name          String
+  // v3.1 — archetype removed as user input. A Track is a curriculum container;
+  // its archetype mix is DERIVED from which roles target it (see archetypeMix
+  // in Gap Report output). Nullable for clean creation; legacy reads default 'Product'.
+  archetype     Archetype?
+  createdAt     DateTime     @default(now())
+  careerTrackId String?
+  cohorts       Cohort[]
+  learners      Learner[]
+  careerTrack   CareerTrack? @relation(fields: [careerTrackId], references: [id])
+  institution   Institution  @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+
+  @@unique([institutionId, name])
+  @@index([institutionId])
+  @@index([careerTrackId])
+}
+
+model Cohort {
+  id             String                  @id @default(cuid())
+  institutionId  String
+  trackId        String
+  indexVersionId String
+  name           String
+  startYear      Int
+  createdAt      DateTime                @default(now())
+  programmes     AugmentationProgramme[]
+  indexVersion   IndexVersion            @relation(fields: [indexVersionId], references: [id])
+  institution    Institution             @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  track          Track                   @relation(fields: [trackId], references: [id])
+  learners       Learner[]
+
+  @@unique([institutionId, name])
+  @@index([trackId])
+}
+
+model Learner {
+  id                     String                   @id @default(cuid())
+  institutionId          String
+  trackId                String
+  cohortId               String
+  name                   String
+  email                  String                   @unique
+  enrolledAt             DateTime                 @default(now())
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime                 @updatedAt
+  // v3 — uploaded resume + AI parse cache (the "current state" of the 3-way map)
+  uploadedResumeText     String?                  @db.Text
+  uploadedResumeAt       DateTime?
+  resumeProfile          Json?                    // ParsedResume from parseResume.ts
+  assessmentAttemptsV2   AssessmentAttemptV2[]
+  attempts               Attempt[]
+  assignments            AugmentationAssignment[]
+  outcomes               AugmentationOutcome[]
+  careerTrackEnrollments CareerTrackEnrollment[]
+  scores                 CompetencyScore[]
+  signals                GradiumSignal[]
+  workShifts             WorkShift[]
+  cohort                 Cohort                   @relation(fields: [cohortId], references: [id])
+  institution            Institution              @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  track                  Track                    @relation(fields: [trackId], references: [id])
+  pipelines              PipelineCandidate[]
+  placements             Placement[]
+  resumes                Resume[]
+  shortlists             Shortlist[]
+  tutorSessions          TutorSession[]
+  user                   User?
+
+  @@index([cohortId])
+  @@index([trackId])
+  @@index([institutionId])
+}
+
+model CompetencyCluster {
+  code             ClusterCode             @id
+  name             String
+  shortName        String
+  description      String
+  archetypeWeights Json
+  assessmentItems  AssessmentBankItem[]
+  attempts         Attempt[]
+  outcomes         AugmentationOutcome[]
+  programmes       AugmentationProgramme[]
+  scores           CompetencyScore[]
+  bankItems        ContentBankItem[]
+  signals          GradiumSignal[]
+}
+
+model CompetencyScore {
+  id            String            @id @default(cuid())
+  learnerId     String
+  clusterCode   ClusterCode
+  scoreWeighted Float
+  confidence    Float
+  freshness     Float
+  attemptsCount Int               @default(0)
+  lastAttemptAt DateTime?
+  // v3 Phase A — optimistic concurrency
+  version       Int               @default(1)
+  updatedAt     DateTime          @updatedAt
+  cluster       CompetencyCluster @relation(fields: [clusterCode], references: [code])
+  learner       Learner           @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+
+  @@unique([learnerId, clusterCode])
+  @@index([clusterCode])
+}
+
+model Assessment {
+  id            String         @id @default(cuid())
+  clusterCode   ClusterCode
+  kind          AssessmentKind
+  title         String
+  maxScore      Int
+  timeLimitSecs Int
+  createdAt     DateTime       @default(now())
+  attempts      Attempt[]
+
+  @@index([clusterCode])
+}
+
+model Attempt {
+  id                 String            @id @default(cuid())
+  learnerId          String
+  assessmentId       String
+  clusterCode        ClusterCode
+  kind               AttemptKind
+  scoreRaw           Float
+  maxScore           Float
+  scoreNorm          Float
+  timeSecs           Int
+  takenAt            DateTime          @default(now())
+  closedAssignmentId String?
+  assessment         Assessment        @relation(fields: [assessmentId], references: [id])
+  cluster            CompetencyCluster @relation(fields: [clusterCode], references: [code])
+  learner            Learner           @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+
+  @@index([learnerId, clusterCode])
+  @@index([takenAt])
+}
+
+model AugmentationProgramme {
+  id              String                   @id @default(cuid())
+  institutionId   String
+  cohortId        String
+  clusterCode     ClusterCode
+  triggerType     TriggerType
+  title           String
+  createdAt       DateTime                 @default(now())
+  createdByUserId String?
+  assignments     AugmentationAssignment[]
+  cluster         CompetencyCluster        @relation(fields: [clusterCode], references: [code])
+  cohort          Cohort                   @relation(fields: [cohortId], references: [id])
+  institution     Institution              @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  steps           AugmentationStep[]
+
+  @@unique([cohortId, clusterCode])
+  @@index([institutionId])
+}
+
+model AugmentationStep {
+  id            String                @id @default(cuid())
+  programmeId   String
+  orderIndex    Int
+  title         String
+  kind          StepKind
+  estMinutes    Int
+  contentItemId String?
+  contentItem   ContentBankItem?      @relation(fields: [contentItemId], references: [id])
+  programme     AugmentationProgramme @relation(fields: [programmeId], references: [id], onDelete: Cascade)
+
+  @@unique([programmeId, orderIndex])
+}
+
+model AugmentationAssignment {
+  id             String                @id @default(cuid())
+  programmeId    String
+  learnerId      String
+  status         AssignmentStatus      @default(assigned)
+  stepsComplete  Int                   @default(0)
+  stepsTotal     Int
+  assignedAt     DateTime              @default(now())
+  startedAt      DateTime?
+  gateUnlockedAt DateTime?
+  completedAt    DateTime?
+  learner        Learner               @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+  programme      AugmentationProgramme @relation(fields: [programmeId], references: [id], onDelete: Cascade)
+  outcome        AugmentationOutcome?
+
+  @@unique([programmeId, learnerId])
+  @@index([learnerId])
+  @@index([status])
+}
+
+model AugmentationOutcome {
+  id           String                 @id @default(cuid())
+  assignmentId String                 @unique
+  learnerId    String
+  clusterCode  ClusterCode
+  scoreBefore  Float
+  scoreAfter   Float
+  delta        Float
+  recordedAt   DateTime               @default(now())
+  assignment   AugmentationAssignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  cluster      CompetencyCluster      @relation(fields: [clusterCode], references: [code])
+  learner      Learner                @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+
+  @@index([learnerId, clusterCode])
+}
+
+model ContentBankItem {
+  id          String             @id @default(cuid())
+  clusterCode ClusterCode
+  kind        StepKind
+  title       String
+  estMinutes  Int
+  url         String?
+  createdAt   DateTime           @default(now())
+  steps       AugmentationStep[]
+  cluster     CompetencyCluster  @relation(fields: [clusterCode], references: [code])
+
+  @@index([clusterCode])
+}
+
+model AssessmentBankItem {
+  id            String            @id @default(cuid())
+  clusterCode   ClusterCode
+  kind          AssessmentKind
+  title         String
+  maxScore      Int
+  timeLimitSecs Int
+  createdAt     DateTime          @default(now())
+  cluster       CompetencyCluster @relation(fields: [clusterCode], references: [code])
+
+  @@index([clusterCode])
+}
+
+model GradiumSignal {
+  id            String            @id @default(cuid())
+  learnerId     String
+  clusterCode   ClusterCode
+  state         SignalState       @default(pending)
+  portableToken String?
+  issuedAt      DateTime?
+  expiresAt     DateTime?
+  revokedAt     DateTime?
+  cluster       CompetencyCluster @relation(fields: [clusterCode], references: [code])
+  learner       Learner           @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+
+  @@unique([learnerId, clusterCode])
+  @@index([state])
+}
+
+model CareerTrack {
+  id             String                  @id @default(cuid())
+  code           String                  @unique
+  name           String
+  // v3.1 — archetype removed as user input. Derived from the actual employer
+  // roles that target this track. Nullable on create; surfaces as "archetypeMix"
+  // (e.g. 65% Product / 25% MassRecruiter / 10% Service) in Gap Report outputs.
+  archetype      Archetype?
+  clusterWeights Json
+  clusterTargets Json
+  // v3 — career-track-level institution scoping; null = legacy v2 global track
+  institutionId  String?
+  // v3 Phase A — taxonomy metadata
+  tier           Int                     @default(1)   // 1=Tier1, 2=Tier2, 3=Tier3
+  seedVersion    String                  @default("1.0.0")
+  createdBy      String                  @default("veranox-seed")
+  createdAt      DateTime                @default(now())
+  curricula      Curriculum[]
+  enrollments    CareerTrackEnrollment[]
+  demandSignals  DemandSignal[]
+  employerRoles  EmployerRole[]
+  placements     Placement[]
+  resumes        Resume[]
+  tracks         Track[]
+
+  @@index([institutionId])
+}
+
+model Employer {
+  id            String              @id @default(cuid())
+  name          String              @unique
+  // v3.1 — archetype removed as user input at signup. Derived from the mode
+  // of all the employer's roles' archetypes (each role's archetype is itself
+  // extracted from the JD by Groq). Recomputed via recomputeEmployerArchetype()
+  // every time a JD is uploaded. Nullable on signup → "Pending classification"
+  // chip until the first JD lands.
+  archetype     Archetype?
+  plan          String              @default("growth")
+  // v3 Phase A — KYC
+  kycStatus     String              @default("Pending")  // Pending | Verified | Rejected
+  createdAt     DateTime            @default(now())
+  demandSignals DemandSignal[]
+  roles         EmployerRole[]
+  pipelines     PipelineCandidate[]
+  placements    Placement[]
+  users         User[]
+
+  @@index([archetype])
+}
+
+model EmployerRole {
+  id             String              @id @default(cuid())
+  employerId     String
+  careerTrackId  String
+  title          String
+  seatsPlanned   Int                 @default(1)
+  status         RoleStatus          @default(active)
+  clusterWeights Json
+  clusterTargets Json
+  // v3 — raw uploaded JD + AI extraction provenance
+  jdText         String?             @db.Text
+  jdSource       String?             // 'paste' | 'pdf'
+  jdFileName     String?
+  jdUploadedAt   DateTime?
+  jdExtractedAt  DateTime?
+  jdVersion      Int                 @default(1)
+  // v3 — AI extras parsed from JD ({extractedTitle, extractedRequirements, archetype, seniority})
+  jdExtraction   Json?
+  // v3 Phase A — optimistic concurrency
+  version        Int                 @default(1)
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  careerTrack    CareerTrack         @relation(fields: [careerTrackId], references: [id])
+  employer       Employer            @relation(fields: [employerId], references: [id], onDelete: Cascade)
+  pipelines      PipelineCandidate[]
+  shortlists     Shortlist[]
+
+  @@index([employerId, status])
+  @@index([careerTrackId, status])
+}
+
+model Shortlist {
+  id        String         @id @default(cuid())
+  roleId    String
+  learnerId String
+  state     ShortlistState @default(watching)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  learner   Learner        @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+  role      EmployerRole   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, learnerId])
+  @@index([learnerId])
+}
+
+model PipelineCandidate {
+  id             String        @id @default(cuid())
+  employerId     String
+  roleId         String
+  learnerId      String
+  stage          PipelineStage @default(invited)
+  decision       Decision?
+  signalMatch    Float
+  augmentedMatch Float?
+  invitedAt      DateTime      @default(now())
+  assessedAt     DateTime?
+  decidedAt      DateTime?
+  employer       Employer      @relation(fields: [employerId], references: [id], onDelete: Cascade)
+  learner        Learner       @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+  role           EmployerRole  @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, learnerId])
+  @@index([employerId, stage])
+  @@index([learnerId])
+}
+
+model DemandSignal {
+  id            String      @id @default(cuid())
+  employerId    String
+  careerTrackId String
+  clusterCode   ClusterCode
+  targetScore   Int
+  status        String      @default("submitted")
+  createdAt     DateTime    @default(now())
+  careerTrack   CareerTrack @relation(fields: [careerTrackId], references: [id])
+  employer      Employer    @relation(fields: [employerId], references: [id], onDelete: Cascade)
+
+  @@index([careerTrackId, clusterCode])
+  @@index([employerId])
+}
+
+model Placement {
+  id             String       @id @default(cuid())
+  learnerId      String
+  employerId     String
+  roleTitle      String
+  careerTrackId  String?
+  ctcLpa         Float
+  joinDate       DateTime
+  graduationYear Int
+  createdAt      DateTime     @default(now())
+  careerTrack    CareerTrack? @relation(fields: [careerTrackId], references: [id])
+  employer       Employer     @relation(fields: [employerId], references: [id])
+  learner        Learner      @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+
+  @@index([learnerId])
+  @@index([employerId])
+  @@index([careerTrackId])
+  @@index([joinDate])
+}
+
+model CareerTrackEnrollment {
+  id            String      @id @default(cuid())
+  learnerId     String
+  careerTrackId String
+  isPrimary     Boolean     @default(false)
+  enrolledAt    DateTime    @default(now())
+  careerTrack   CareerTrack @relation(fields: [careerTrackId], references: [id])
+  learner       Learner     @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+
+  @@unique([learnerId, careerTrackId])
+  @@index([learnerId])
+  @@index([careerTrackId])
+}
+
+model Resume {
+  id               String        @id @default(cuid())
+  learnerId        String
+  careerTrackId    String
+  variant          ResumeVariant @default(general)
+  matchedRoleId    String?
+  jdText           String?
+  headline         String
+  summary          String
+  sections         Json
+  signalScoreAtGen Int
+  signalConfAtGen  Float
+  createdAt        DateTime      @default(now())
+  careerTrack      CareerTrack   @relation(fields: [careerTrackId], references: [id])
+  learner          Learner       @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+
+  @@index([learnerId, careerTrackId])
+  @@index([careerTrackId])
+}
+
+model AssessmentAttemptV2 {
+  id            String             @id @default(cuid())
+  learnerId     String
+  clusterCode   ClusterCode
+  kind          AssessmentItemKind
+  careerTrackId String?
+  assessmentRef String
+  score         Int?
+  timeSpentSec  Int
+  submittedAt   DateTime           @default(now())
+  answers       Json
+  feedback      Json?
+  // v3 — Groq-graded AI feedback for descriptive/coding kinds
+  // {rubric_score: {criterion: 0..100}, strengths: [], gaps: [], suggestions: []}
+  aiFeedback              Json?
+  aiGradedAt              DateTime?
+  aiModel                 String?
+  // v3 Phase A — AI-authored-likelihood gate + proctoring flags (BC D11)
+  aiAuthoredLikelihood    Float?   // 0..1; >0.85 flags the attempt
+  proctorFlags            Json?    // {tabSwitches, copyAttempts, fullscreenExits}
+  suspicious              Boolean  @default(false)
+  learner                 Learner  @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+
+  @@index([learnerId, clusterCode])
+  @@index([learnerId, submittedAt])
+}
+
+model TutorSession {
+  id           String      @id @default(cuid())
+  learnerId    String
+  clusterCode  ClusterCode
+  subtopicCode String
+  startedAt    DateTime    @default(now())
+  endedAt      DateTime?
+  transcript   Json
+  rubric       Json?
+  learner      Learner     @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+
+  @@index([learnerId, clusterCode])
+}
+
+enum Role {
+  DEAN
+  PLACEMENT_OFFICER
+  FACULTY_ADMIN
+  STUDENT
+  TA_LEAD
+  LEARNER
+  SUPER_ADMIN
+}
+
+enum Archetype {
+  Product
+  Service
+  MassRecruiter
+}
+
+enum ClusterCode {
+  C1
+  C2
+  C3
+  C4
+  C5
+  C6
+  C7
+  C8
+}
+
+enum TriggerType {
+  mandatory
+  on_demand
+  stretch
+}
+
+enum AssignmentStatus {
+  assigned
+  in_progress
+  awaiting_assessment
+  complete
+}
+
+enum AttemptKind {
+  baseline
+  post_augmentation
+  retake
+}
+
+enum StepKind {
+  reading
+  video
+  practice
+  checkpoint
+}
+
+enum AssessmentKind {
+  baseline
+  post_augmentation
+  diagnostic
+}
+
+enum SignalState {
+  pending
+  issued
+  revoked
+}
+
+enum RoleStatus {
+  draft
+  active
+  paused
+  closed
+}
+
+enum ShortlistState {
+  watching
+  dismissed
+  piped
+}
+
+enum PipelineStage {
+  invited
+  assessed
+  decisioned
+}
+
+enum Decision {
+  offer
+  hold
+  reject
+}
+
+enum ResumeVariant {
+  general
+  matched_company
+  jd_tailored
+}
+
+enum AssessmentItemKind {
+  mcq
+  descriptive
+  coding
+  simulation
+}
+
+/// Public-data cache (Serper-backed market intel).
+/// Keyed by (stakeholderKind, stakeholderId, slot). Holds the AI-synthesised
+/// MarketSnapshot / PeerBenchmark JSON for 24h. Refresh forces re-query.
+model PublicDataCache {
+  id              String   @id @default(cuid())
+  stakeholderKind String   // 'talent' | 'workforce' | 'campus'
+  stakeholderId   String   // learnerId | employerId | institutionId
+  slot            String   // 'self-profile' | 'peer-benchmark' | 'counterparty' | 'domain-news' | 'track-market' | 'role-market'
+  contextHash     String   // hash of input context (city, track, etc.) — same key+context = cache hit
+  payload         Json     // the synthesised MarketSnapshot / PeerBenchmark
+  fromFixture     Boolean  @default(false)
+  retrievedAt     DateTime @default(now())
+  expiresAt       DateTime
+
+  @@unique([stakeholderKind, stakeholderId, slot, contextHash])
+  @@index([stakeholderKind, stakeholderId])
+  @@index([expiresAt])
+}
+
+// v3.1.6 — WorkShift persistence. Today shift state lives client-side; this
+// table makes shifts resumable across devices and surfaces cohort-level
+// "shift completion rate" + "mean shift score per cluster" to Deans.
+// Scenarios themselves stay in publicDataCache (already implemented) — this
+// table tracks per-LEARNER attempts only (no IP / scenario authoring leakage).
+model WorkShift {
+  id            String    @id @default(cuid())
+  learnerId     String
+  // The cache hash that points to the scenario in publicDataCache.
+  // We re-fetch the scenario on resume — keeps the table small + lets us
+  // version the scenario layer independently.
+  scenarioHash  String
+  scenarioCompany String?  // for at-a-glance UI ("SwiftPay shift, paused")
+  state         String    // 'in_progress' | 'completed' | 'abandoned'
+  startedAt     DateTime  @default(now())
+  completedAt   DateTime?
+  // perArtifact: [{ artifactId, clusterCode, score, oneLine, submittedAt }]
+  perArtifact   Json
+  // shiftReadout: { aggregateScore, clusterHeatmap: {C1..C8}, managerNote }
+  shiftReadout  Json?
+  learner       Learner   @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+  @@index([learnerId, state])
+  @@index([startedAt])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// v3 Phase A additions — DPDP, audit, consent, notifications, hiring intelligence
+// ─────────────────────────────────────────────────────────────────────────────
+
+model ConsentRecord {
+  id        String   @id @default(cuid())
+  userId    String
+  purpose   String   // assessment-grading | tutor-AI | opportunity-matching | analytics
+  granted   Boolean
+  grantedAt DateTime @default(now())
+  ipAddress String
+
+  @@index([userId, purpose])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  action     String
+  entityType String
+  entityId   String
+  before     Json?
+  after      Json?
+  createdAt  DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([userId, createdAt])
+}
+
+model FeatureFlag {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  enabled   Boolean
+  scope     String?  // null = global; or institutionId / employerId
+  updatedAt DateTime @updatedAt
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  type      String
+  title     String
+  body      String
+  deepLink  String?
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, readAt])
+}
+
+model Application {
+  id              String   @id @default(cuid())
+  learnerId       String
+  roleId          String
+  appliedAt       DateTime @default(now())
+  status          String   // Applied | Shortlisted | Interview | Offer | Accepted | Declined | Withdrawn
+  statusUpdatedAt DateTime @default(now())
+  statusUpdatedBy String
+
+  @@unique([learnerId, roleId])
+  @@index([learnerId])
+  @@index([roleId, status])
+}
+
+model PartnershipRequest {
+  id            String    @id @default(cuid())
+  employerId    String
+  institutionId String
+  status        String    // Pending | Active | Declined | Terminated
+  requestedAt   DateTime  @default(now())
+  respondedAt   DateTime?
+  respondedBy   String?
+
+  @@index([employerId, status])
+  @@index([institutionId, status])
+}
+
+model SponsoredPathway {
+  id                   String   @id @default(cuid())
+  employerId           String
+  institutionId        String
+  pathwayId            String
+  careerTrackId        String
+  clusterTarget        String   // C1..C8
+  fundingConfirmedAt   DateTime
+  firstLookWindowDays  Int      @default(30)
+  status               String   // Draft | Active | Complete
+
+  @@index([institutionId])
+  @@index([employerId])
+}
+
+model HiringBarProfile {
+  id             String   @id @default(cuid())
+  employerId     String
+  careerTrackId  String
+  clusterTargets Json     // {C1..C8: 0..100}
+  seniority      String
+  archetype      String
+  publishedAt    DateTime @default(now())
+  version        Int      @default(1)
+
+  @@index([employerId, careerTrackId])
+}
+
+model MarketDemandSignal {
+  id                String   @id @default(cuid())
+  careerTrackId     String
+  city              String?
+  archetype         String?
+  jobPostingVolume  Int
+  p50ClusterTargets Json
+  source            String   // 'cold-start-public' | 'live-aggregate'
+  capturedAt        DateTime @default(now())
+
+  @@index([careerTrackId])
+}
+
+model DisputeRecord {
+  id             String    @id @default(cuid())
+  userId         String
+  description    String    @db.Text
+  status         String    // Open | UnderReview | Resolved
+  createdAt      DateTime  @default(now())
+  acknowledgedAt DateTime?
+  resolvedAt     DateTime?
+  resolution     String?
+
+  @@index([userId, status])
+}
+
+model FeedbackRecord {
+  id        String   @id @default(cuid())
+  userId    String?
+  type      String   // bug | suggestion | question
+  message   String   @db.Text
+  page      String?
+  createdAt DateTime @default(now())
+
+  @@index([type, createdAt])
+}

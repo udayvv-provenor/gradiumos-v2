@@ -1,0 +1,12 @@
+[
+  { "careerTrackCode": "SWE",       "city": "Bengaluru", "archetype": "Product",      "jobPostingVolume": 14200, "p50ClusterTargets": {"C1":72,"C2":70,"C3":75,"C4":65,"C5":60,"C6":58,"C7":62,"C8":55} },
+  { "careerTrackCode": "SWE",       "city": "Hyderabad", "archetype": "Service",      "jobPostingVolume": 8900,  "p50ClusterTargets": {"C1":68,"C2":65,"C3":70,"C4":58,"C5":62,"C6":55,"C7":58,"C8":52} },
+  { "careerTrackCode": "DATA",      "city": "Bengaluru", "archetype": "Product",      "jobPostingVolume": 5200,  "p50ClusterTargets": {"C1":70,"C2":75,"C3":65,"C4":68,"C5":58,"C6":72,"C7":60,"C8":62} },
+  { "careerTrackCode": "MLAI",      "city": "Bengaluru", "archetype": "Product",      "jobPostingVolume": 3800,  "p50ClusterTargets": {"C1":75,"C2":78,"C3":68,"C4":70,"C5":55,"C6":78,"C7":62,"C8":65} },
+  { "careerTrackCode": "FULLSTACK", "city": "Pune",      "archetype": "Service",      "jobPostingVolume": 6100,  "p50ClusterTargets": {"C1":70,"C2":68,"C3":72,"C4":60,"C5":62,"C6":58,"C7":60,"C8":55} },
+  { "careerTrackCode": "DEVOPS",    "city": "Bengaluru", "archetype": "Product",      "jobPostingVolume": 2900,  "p50ClusterTargets": {"C1":68,"C2":65,"C3":78,"C4":72,"C5":58,"C6":68,"C7":65,"C8":60} },
+  { "careerTrackCode": "CLOUD",     "city": "Bengaluru", "archetype": "Service",      "jobPostingVolume": 4100,  "p50ClusterTargets": {"C1":65,"C2":62,"C3":72,"C4":70,"C5":58,"C6":70,"C7":62,"C8":55} },
+  { "careerTrackCode": "CYBER",     "city": "Chennai",   "archetype": "Service",      "jobPostingVolume": 1800,  "p50ClusterTargets": {"C1":72,"C2":68,"C3":70,"C4":65,"C5":55,"C6":75,"C7":65,"C8":58} },
+  { "careerTrackCode": "PROD",      "city": "Bengaluru", "archetype": "Product",      "jobPostingVolume": 2200,  "p50ClusterTargets": {"C1":62,"C2":72,"C3":65,"C4":80,"C5":72,"C6":58,"C7":70,"C8":62} },
+  { "careerTrackCode": "SWE",       "city": "Chennai",   "archetype": "MassRecruiter","jobPostingVolume": 7600,  "p50ClusterTargets": {"C1":65,"C2":62,"C3":68,"C4":55,"C5":60,"C6":52,"C7":55,"C8":50} }
+]

@@ -1,0 +1,7 @@
+[
+  { "name": "Indian Institute of Technology Bombay", "nirfRank": 3,  "naacGrade": "A++", "aisheCode": "IR-E-U-0306" },
+  { "name": "National Institute of Technology Trichy", "nirfRank": 9,  "naacGrade": "A+",  "aisheCode": "IR-E-U-0477" },
+  { "name": "BITS Pilani",                            "nirfRank": 27, "naacGrade": "A",   "aisheCode": "IR-E-DU-0347" },
+  { "name": "VIT Vellore",                            "nirfRank": 11, "naacGrade": "A++", "aisheCode": "IR-E-DU-0467" },
+  { "name": "Manipal Institute of Technology",        "nirfRank": 43, "naacGrade": "A+",  "aisheCode": "IR-E-DU-0351" }
+]

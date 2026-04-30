@@ -1,0 +1,12 @@
+# nixpacks.toml — Railway build config for GradiumOS backend
+# Without this, Railway detects NODE_ENV=production and runs
+# "npm ci --omit=dev", which skips TypeScript and other devDeps.
+
+[phases.install]
+cmds = ["npm ci --include=dev"]
+
+[phases.build]
+cmds = ["npx prisma generate", "npm run build"]
+
+[start]
+cmd = "node dist/server.js"

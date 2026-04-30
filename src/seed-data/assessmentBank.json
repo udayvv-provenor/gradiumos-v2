@@ -1,0 +1,961 @@
+[
+  {
+    "id": "C1-MCQ-01", "clusterCode": "C1", "kind": "mcq", "title": "Big-O of Nested Loops",
+    "prompt": "A function iterates over every pair (i, j) of elements in an array of length n, doing O(1) work per pair. What is its time complexity?",
+    "timeLimitSec": 120,
+    "options": [ { "id": "a", "text": "O(log n)" }, { "id": "b", "text": "O(n)" }, { "id": "c", "text": "O(n log n)" }, { "id": "d", "text": "O(n^2)" } ],
+    "correctOptionId": "d"
+  },
+  {
+    "id": "C1-MCQ-02", "clusterCode": "C1", "kind": "mcq", "title": "Process vs Thread",
+    "prompt": "Which statement about processes vs. threads is most accurate?",
+    "timeLimitSec": 120,
+    "options": [ { "id": "a", "text": "Threads in one process share the same virtual address space." }, { "id": "b", "text": "Processes share heap memory by default." }, { "id": "c", "text": "Threads have separate PID entries in the kernel." }, { "id": "d", "text": "Context-switching between threads is always slower than between processes." } ],
+    "correctOptionId": "a"
+  },
+  {
+    "id": "C1-MCQ-03", "clusterCode": "C1", "kind": "mcq", "title": "Index Selection",
+    "prompt": "A Postgres table 'orders' has 50M rows. Queries filter on customer_id (~200 distinct) and then order by created_at. Which index is most selective for the lookup?",
+    "timeLimitSec": 150,
+    "options": [ { "id": "a", "text": "B-tree on customer_id" }, { "id": "b", "text": "B-tree on created_at" }, { "id": "c", "text": "Composite B-tree on (customer_id, created_at DESC)" }, { "id": "d", "text": "Hash index on customer_id" } ],
+    "correctOptionId": "c"
+  },
+  {
+    "id": "C1-DESC-01", "clusterCode": "C1", "kind": "descriptive", "title": "Explain Deadlock",
+    "prompt": "Describe the four Coffman conditions for deadlock and explain one strategy that prevents at least one of them in a multi-threaded resource scheduler.",
+    "timeLimitSec": 600,
+    "rubricBullets": [
+      "Names all four conditions: mutual exclusion, hold-and-wait, no preemption, circular wait.",
+      "Picks a concrete strategy such as total ordering of locks to break circular wait.",
+      "Explains how the strategy integrates with a scheduler rather than a user-space wrapper.",
+      "Acknowledges at least one tradeoff (e.g. reduced concurrency, cost of acquiring all locks up front)."
+    ]
+  },
+  {
+    "id": "C1-DESC-02", "clusterCode": "C1", "kind": "descriptive", "title": "Describe TCP Handshake",
+    "prompt": "Walk through the three-way TCP handshake. Then describe one failure mode you have seen in production and how it was diagnosed.",
+    "timeLimitSec": 480,
+    "rubricBullets": [
+      "Correctly describes SYN, SYN-ACK, ACK with sequence and acknowledgement numbers.",
+      "Picks a real failure mode (SYN flood, half-open connections, MSS blackhole).",
+      "Mentions a concrete diagnostic tool (tcpdump, ss, netstat).",
+      "Connects the failure to an observable customer-visible symptom."
+    ]
+  },
+  {
+    "id": "C1-CODE-01", "clusterCode": "C1", "kind": "coding", "title": "Detect Graph Cycle",
+    "prompt": "Given a directed graph as an adjacency list, return true if and only if it contains a cycle.",
+    "timeLimitSec": 1200,
+    "starterCode": "export function hasCycle(graph: Record<string, string[]>): boolean {\n  // TODO\n  return false;\n}",
+    "testCases": [
+      { "input": "{\"a\":[\"b\"],\"b\":[\"c\"],\"c\":[]}",           "expected": "false" },
+      { "input": "{\"a\":[\"b\"],\"b\":[\"c\"],\"c\":[\"a\"]}",       "expected": "true"  },
+      { "input": "{\"a\":[\"b\",\"c\"],\"b\":[\"d\"],\"c\":[],\"d\":[]}","expected": "false" },
+      { "input": "{\"a\":[\"a\"]}",                                 "expected": "true"  }
+    ]
+  },
+  {
+    "id": "C1-CODE-02", "clusterCode": "C1", "kind": "coding", "title": "LRU Cache",
+    "prompt": "Implement an LRU cache with O(1) get and put. Capacity is provided via the constructor.",
+    "timeLimitSec": 1500,
+    "starterCode": "export class LRU<K, V> {\n  constructor(private capacity: number) {}\n  get(key: K): V | undefined { return undefined; }\n  put(key: K, value: V): void {}\n}",
+    "testCases": [
+      { "input": "put a 1; put b 2; get a",             "expected": "1" },
+      { "input": "put a 1; put b 2; put c 3; get a",    "expected": "undefined" },
+      { "input": "put a 1; get a; put b 2; put c 3; get a", "expected": "1" }
+    ]
+  },
+  {
+    "id": "C1-SIM-01", "clusterCode": "C1", "kind": "simulation", "title": "Database Migration Cutover",
+    "prompt": "Your team is cutting over a read-heavy service from MySQL to Postgres this weekend. The SRE and product manager are in the room. Walk through the go/no-go conversation you lead 30 minutes before the freeze window.",
+    "timeLimitSec": 900,
+    "roleContext": {
+      "you": "Senior backend engineer owning the migration",
+      "stakeholders": [
+        { "role": "SRE On-Call", "position": "Wants explicit rollback command and a monitoring plan." },
+        { "role": "Product Manager", "position": "Customer success has already posted the maintenance banner; slip means re-posting." }
+      ]
+    },
+    "expectedOutputHint": "Show explicit go/no-go criteria, a rollback recipe, and the moment the PM is given decision authority."
+  },
+  {
+    "id": "C1-SIM-02", "clusterCode": "C1", "kind": "simulation", "title": "Explaining a Schema Choice",
+    "prompt": "A junior engineer pushes back on your choice of a normalized 3NF schema for a reporting table. Walk through your response.",
+    "timeLimitSec": 600,
+    "roleContext": {
+      "you": "Tech lead",
+      "stakeholders": [
+        { "role": "Junior Engineer", "position": "Argues denormalization would be faster to ship." },
+        { "role": "Data Analyst", "position": "Needs ad-hoc querying flexibility in week one." }
+      ]
+    },
+    "expectedOutputHint": "Acknowledge the junior's point, show the second-order read-amplification risk, and name the condition under which you would denormalize later."
+  },
+  {
+    "id": "C1-MCQ-04", "clusterCode": "C1", "kind": "mcq", "title": "Transaction Isolation",
+    "prompt": "Which isolation level prevents dirty reads but allows non-repeatable reads in most SQL databases?",
+    "timeLimitSec": 120,
+    "options": [ { "id": "a", "text": "Read Uncommitted" }, { "id": "b", "text": "Read Committed" }, { "id": "c", "text": "Repeatable Read" }, { "id": "d", "text": "Serializable" } ],
+    "correctOptionId": "b"
+  },
+  {
+    "id": "C1-CODE-03", "clusterCode": "C1", "kind": "coding", "title": "Topological Sort",
+    "prompt": "Given a DAG as adjacency list, return a valid topological ordering, or an empty array if a cycle is detected.",
+    "timeLimitSec": 1200,
+    "starterCode": "export function topoSort(graph: Record<string, string[]>): string[] {\n  return [];\n}",
+    "testCases": [
+      { "input": "{\"a\":[\"b\"],\"b\":[\"c\"],\"c\":[]}", "expected": "[\"a\",\"b\",\"c\"]" },
+      { "input": "{\"a\":[\"b\"],\"b\":[\"a\"]}", "expected": "[]" }
+    ]
+  },
+  {
+    "id": "C1-DESC-03", "clusterCode": "C1", "kind": "descriptive", "title": "Memory Management",
+    "prompt": "Compare stack and heap allocation. Describe when each is used, and one class of bug unique to each.",
+    "timeLimitSec": 480,
+    "rubricBullets": [
+      "Correctly describes allocation mechanics of both.",
+      "Names stack-overflow or dangling pointer for stack; leak or fragmentation for heap.",
+      "Shows awareness of language-level escape analysis or GC."
+    ]
+  },
+
+  {
+    "id": "C2-MCQ-01", "clusterCode": "C2", "kind": "mcq", "title": "Divide and Conquer Complexity",
+    "prompt": "A recurrence T(n) = 2T(n/2) + O(n) solves to which complexity by the master theorem?",
+    "timeLimitSec": 120,
+    "options": [ { "id": "a", "text": "O(n)" }, { "id": "b", "text": "O(n log n)" }, { "id": "c", "text": "O(n^2)" }, { "id": "d", "text": "O(log n)" } ],
+    "correctOptionId": "b"
+  },
+  {
+    "id": "C2-MCQ-02", "clusterCode": "C2", "kind": "mcq", "title": "Greedy Correctness",
+    "prompt": "Which problem is NOT solved optimally by a greedy algorithm?",
+    "timeLimitSec": 120,
+    "options": [ { "id": "a", "text": "Activity selection with intervals" }, { "id": "b", "text": "0/1 knapsack" }, { "id": "c", "text": "Huffman coding" }, { "id": "d", "text": "Dijkstra on non-negative edges" } ],
+    "correctOptionId": "b"
+  },
+  {
+    "id": "C2-MCQ-03", "clusterCode": "C2", "kind": "mcq", "title": "Binary Search Invariant",
+    "prompt": "In classical binary search with 'lo' and 'hi' pointers, what invariant must hold inside the loop when searching for the leftmost occurrence of a value?",
+    "timeLimitSec": 150,
+    "options": [
+      { "id": "a", "text": "arr[lo-1] < target and arr[hi] >= target" },
+      { "id": "b", "text": "arr[lo] >= target and arr[hi] < target" },
+      { "id": "c", "text": "lo <= hi always" },
+      { "id": "d", "text": "arr[mid] == target always" }
+    ],
+    "correctOptionId": "a"
+  },
+  {
+    "id": "C2-CODE-01", "clusterCode": "C2", "kind": "coding", "title": "Two Sum",
+    "prompt": "Return indices of the two numbers in the input array that add up to 'target'. Exactly one answer exists.",
+    "timeLimitSec": 900,
+    "starterCode": "export function twoSum(nums: number[], target: number): [number, number] {\n  return [0, 0];\n}",
+    "testCases": [
+      { "input": "[2,7,11,15], 9", "expected": "[0,1]" },
+      { "input": "[3,2,4], 6",     "expected": "[1,2]" },
+      { "input": "[3,3], 6",       "expected": "[0,1]" }
+    ]
+  },
+  {
+    "id": "C2-CODE-02", "clusterCode": "C2", "kind": "coding", "title": "Longest Substring Without Repeats",
+    "prompt": "Given a string, return the length of the longest substring without repeating characters.",
+    "timeLimitSec": 1200,
+    "starterCode": "export function longestUnique(s: string): number {\n  return 0;\n}",
+    "testCases": [
+      { "input": "abcabcbb", "expected": "3" },
+      { "input": "bbbbb",    "expected": "1" },
+      { "input": "pwwkew",   "expected": "3" }
+    ]
+  },
+  {
+    "id": "C2-CODE-03", "clusterCode": "C2", "kind": "coding", "title": "Coin Change",
+    "prompt": "Return the fewest coins needed to make 'amount' from the given denominations, or -1 if impossible.",
+    "timeLimitSec": 1500,
+    "starterCode": "export function coinChange(coins: number[], amount: number): number {\n  return -1;\n}",
+    "testCases": [
+      { "input": "[1,2,5], 11", "expected": "3" },
+      { "input": "[2], 3",      "expected": "-1" },
+      { "input": "[1], 0",      "expected": "0" }
+    ]
+  },
+  {
+    "id": "C2-DESC-01", "clusterCode": "C2", "kind": "descriptive", "title": "Pick DP vs Greedy",
+    "prompt": "Given a problem where each decision affects future options and you are unsure whether greedy is optimal, describe your decision process for picking between greedy and dynamic programming.",
+    "timeLimitSec": 480,
+    "rubricBullets": [
+      "Proposes a concrete test for optimal substructure.",
+      "Describes how to construct a counter-example for greedy.",
+      "Mentions DP state-space size as a practicality check.",
+      "Names at least one classical borderline case (coin change, scheduling)."
+    ]
+  },
+  {
+    "id": "C2-DESC-02", "clusterCode": "C2", "kind": "descriptive", "title": "Time-Boxed Problem-Solving",
+    "prompt": "You have 45 minutes and a problem you do not immediately see a solution to. Describe how you allocate the time.",
+    "timeLimitSec": 360,
+    "rubricBullets": [
+      "Reserves explicit time for reading and clarifying.",
+      "Plans a 'brute force first' step.",
+      "Commits to a 15-minute stuck-check and what to do next.",
+      "Ends with running tests before submission."
+    ]
+  },
+  {
+    "id": "C2-SIM-01", "clusterCode": "C2", "kind": "simulation", "title": "Live Problem-Solving Interview",
+    "prompt": "An interviewer asks you to merge k sorted linked lists. You get stuck 10 minutes in. Walk through how you recover.",
+    "timeLimitSec": 720,
+    "roleContext": {
+      "you": "Candidate",
+      "stakeholders": [ { "role": "Interviewer", "position": "Wants to see your thought process, not just the answer." } ]
+    },
+    "expectedOutputHint": "Narrate explicitly, switch to a simpler variant (k=2), then generalize."
+  },
+  {
+    "id": "C2-SIM-02", "clusterCode": "C2", "kind": "simulation", "title": "Pairing With a Struggling Peer",
+    "prompt": "A teammate is stuck on a DP problem with a 24-hour deadline. Walk through the first 15 minutes of pairing.",
+    "timeLimitSec": 600,
+    "roleContext": {
+      "you": "Senior peer",
+      "stakeholders": [ { "role": "Stuck teammate", "position": "Has written partial, wrong code and is frustrated." } ]
+    },
+    "expectedOutputHint": "Do not take the keyboard; ask questions that surface the state definition."
+  },
+
+  {
+    "id": "C3-MCQ-01", "clusterCode": "C3", "kind": "mcq", "title": "Commit Hygiene",
+    "prompt": "Which of the following is the BEST commit-message practice for a PR that fixes a single bug?",
+    "timeLimitSec": 120,
+    "options": [
+      { "id": "a", "text": "WIP: more changes" },
+      { "id": "b", "text": "fix: reject empty email in signup form (closes #1214)" },
+      { "id": "c", "text": "Update SignupForm.tsx" },
+      { "id": "d", "text": "A long essay on why JS is bad" }
+    ],
+    "correctOptionId": "b"
+  },
+  {
+    "id": "C3-MCQ-02", "clusterCode": "C3", "kind": "mcq", "title": "Feature Flags",
+    "prompt": "You need to ship a risky migration gradually. Which is the SAFEST rollout posture?",
+    "timeLimitSec": 150,
+    "options": [
+      { "id": "a", "text": "Merge behind a feature flag defaulted off, enable for 1% of traffic, observe, scale up." },
+      { "id": "b", "text": "Wait until 100% ready, then deploy to everyone at once." },
+      { "id": "c", "text": "Push straight to production on a Friday afternoon." },
+      { "id": "d", "text": "Merge without tests; we can fix forward." }
+    ],
+    "correctOptionId": "a"
+  },
+  {
+    "id": "C3-MCQ-03", "clusterCode": "C3", "kind": "mcq", "title": "CI Break",
+    "prompt": "Main branch CI turns red with a flaky integration test. First action?",
+    "timeLimitSec": 120,
+    "options": [
+      { "id": "a", "text": "Disable the test silently and keep merging." },
+      { "id": "b", "text": "Quarantine the test, open an issue with logs, announce in the team channel." },
+      { "id": "c", "text": "Revert every PR since yesterday." },
+      { "id": "d", "text": "Ignore CI and force-merge." }
+    ],
+    "correctOptionId": "b"
+  },
+  {
+    "id": "C3-CODE-01", "clusterCode": "C3", "kind": "coding", "title": "Parse Env Var",
+    "prompt": "Write a function readIntEnv(name) that reads an integer environment variable with a default of 0, returning NaN only when the value is set but unparseable.",
+    "timeLimitSec": 900,
+    "starterCode": "export function readIntEnv(name: string): number {\n  return 0;\n}",
+    "testCases": [
+      { "input": "unset PORT",      "expected": "0"   },
+      { "input": "PORT=42",         "expected": "42"  },
+      { "input": "PORT=abc",        "expected": "NaN" }
+    ]
+  },
+  {
+    "id": "C3-CODE-02", "clusterCode": "C3", "kind": "coding", "title": "Retry With Backoff",
+    "prompt": "Implement retry(fn, { attempts, baseMs }) that retries an async fn with exponential backoff up to 'attempts' times.",
+    "timeLimitSec": 1200,
+    "starterCode": "export async function retry<T>(fn: () => Promise<T>, opts: { attempts: number; baseMs: number }): Promise<T> {\n  return fn();\n}",
+    "testCases": [
+      { "input": "succeeds on first call",         "expected": "success after 1 attempt" },
+      { "input": "fails twice then succeeds",      "expected": "success after 3 attempts" },
+      { "input": "fails on every attempt",          "expected": "throws last error" }
+    ]
+  },
+  {
+    "id": "C3-DESC-01", "clusterCode": "C3", "kind": "descriptive", "title": "Debug a Mystery P95",
+    "prompt": "Your service's p95 latency jumped from 140 ms to 620 ms this morning. No deploy went out. Walk through how you would investigate, in order.",
+    "timeLimitSec": 600,
+    "rubricBullets": [
+      "Starts with observability: check dashboards and logs for a temporal correlation.",
+      "Checks dependency health (database, cache, upstream) before application code.",
+      "Considers infrastructure changes (autoscaling, noisy neighbour).",
+      "Mentions creating a hypothesis log or timeline document."
+    ]
+  },
+  {
+    "id": "C3-DESC-02", "clusterCode": "C3", "kind": "descriptive", "title": "Review a Risky PR",
+    "prompt": "A junior teammate sends you a 1500-line PR that rewrites the auth layer. How do you review it?",
+    "timeLimitSec": 480,
+    "rubricBullets": [
+      "Asks for a design document or pre-work before reviewing code.",
+      "Requests the PR be split into smaller reviewable chunks.",
+      "Calls out security boundaries explicitly.",
+      "Plans a pairing session instead of only async comments."
+    ]
+  },
+  {
+    "id": "C3-SIM-01", "clusterCode": "C3", "kind": "simulation", "title": "Production Incident",
+    "prompt": "Payments are failing at 3% rate and climbing. You are IC commander for the incident. Walk through the first 10 minutes.",
+    "timeLimitSec": 900,
+    "roleContext": {
+      "you": "Incident Commander",
+      "stakeholders": [
+        { "role": "On-Call Engineer", "position": "Already investigating logs." },
+        { "role": "Support Lead", "position": "Customers are calling in; needs a message." },
+        { "role": "CTO", "position": "Wants an ETA." }
+      ]
+    },
+    "expectedOutputHint": "Designate scribe, comms channel, and rollback owner; set a 10-minute checkpoint."
+  },
+  {
+    "id": "C3-SIM-02", "clusterCode": "C3", "kind": "simulation", "title": "Code Review Pushback",
+    "prompt": "An engineer disagrees with your review comments on test coverage. Walk through the conversation.",
+    "timeLimitSec": 600,
+    "roleContext": {
+      "you": "Reviewer",
+      "stakeholders": [ { "role": "Author", "position": "Feels tests slow them down." } ]
+    },
+    "expectedOutputHint": "Name the specific risk. Offer a concrete minimum. Avoid authority framing."
+  },
+  {
+    "id": "C3-MCQ-04", "clusterCode": "C3", "kind": "mcq", "title": "Dependency Bump",
+    "prompt": "Your tool reports a CVE in a transitive dependency. What is the most appropriate first step?",
+    "timeLimitSec": 120,
+    "options": [
+      { "id": "a", "text": "Ignore — the CVE is transitive, not direct." },
+      { "id": "b", "text": "Check if the vulnerable code path is actually reachable, then plan an upgrade window." },
+      { "id": "c", "text": "Immediately force-push a major version bump to main." },
+      { "id": "d", "text": "Delete the dependency altogether." }
+    ],
+    "correctOptionId": "b"
+  },
+  {
+    "id": "C3-CODE-03", "clusterCode": "C3", "kind": "coding", "title": "Idempotent Upsert",
+    "prompt": "Write a function upsertUser(userId, patch) that is safe to retry and never produces duplicates.",
+    "timeLimitSec": 1200,
+    "starterCode": "export async function upsertUser(userId: string, patch: Record<string, unknown>): Promise<void> {}",
+    "testCases": [
+      { "input": "run twice with same args", "expected": "one record" },
+      { "input": "patch only changes name",  "expected": "name updated, no other fields touched" }
+    ]
+  },
+
+  {
+    "id": "C4-MCQ-01", "clusterCode": "C4", "kind": "mcq", "title": "CAP Tradeoff",
+    "prompt": "A read-heavy global service tolerates a few seconds of staleness but cannot tolerate downtime. Which CAP posture is most appropriate?",
+    "timeLimitSec": 150,
+    "options": [
+      { "id": "a", "text": "CP — choose consistency over availability during partition." },
+      { "id": "b", "text": "AP — choose availability with eventual consistency." },
+      { "id": "c", "text": "CA — assume no partitions can ever happen." },
+      { "id": "d", "text": "None — CAP does not apply." }
+    ],
+    "correctOptionId": "b"
+  },
+  {
+    "id": "C4-MCQ-02", "clusterCode": "C4", "kind": "mcq", "title": "Queue vs Sync RPC",
+    "prompt": "A request produces a computation taking 4 minutes and the user does not need an immediate response. Which pattern is MOST appropriate?",
+    "timeLimitSec": 120,
+    "options": [
+      { "id": "a", "text": "Synchronous HTTP with a 5-minute timeout." },
+      { "id": "b", "text": "202 Accepted with a status URL and background job via queue." },
+      { "id": "c", "text": "Long polling the endpoint every second." },
+      { "id": "d", "text": "WebSocket with a retry loop." }
+    ],
+    "correctOptionId": "b"
+  },
+  {
+    "id": "C4-MCQ-03", "clusterCode": "C4", "kind": "mcq", "title": "Cache Invalidation",
+    "prompt": "You cache compiled user preferences for 1 hour. Users complain that changing a setting 'sometimes' doesn't take effect. BEST first fix?",
+    "timeLimitSec": 150,
+    "options": [
+      { "id": "a", "text": "Lower TTL to 1 minute and call it done." },
+      { "id": "b", "text": "Invalidate the cache key on the write path." },
+      { "id": "c", "text": "Remove the cache entirely." },
+      { "id": "d", "text": "Add a second cache layer." }
+    ],
+    "correctOptionId": "b"
+  },
+  {
+    "id": "C4-DESC-01", "clusterCode": "C4", "kind": "descriptive", "title": "Design URL Shortener",
+    "prompt": "Sketch the system design for a URL shortener expected to serve 1000 redirects/second with custom alias support. Include data model, write path, and read path.",
+    "timeLimitSec": 900,
+    "rubricBullets": [
+      "Picks a keyspace strategy (base62 counter vs hash vs user alias) and justifies it.",
+      "Separates write path from read path; read path is cache-first.",
+      "Handles custom alias collisions.",
+      "Mentions at least one failure mode (hot key, counter overflow, cache miss storm)."
+    ]
+  },
+  {
+    "id": "C4-DESC-02", "clusterCode": "C4", "kind": "descriptive", "title": "Tradeoff a Monolith Split",
+    "prompt": "The monolith's deploys have become painful. Make the case for (or against) splitting one module into its own service. Include what you would measure.",
+    "timeLimitSec": 600,
+    "rubricBullets": [
+      "Identifies specific symptoms: deploy time, blast radius, team autonomy.",
+      "Names the cost: network boundaries, data consistency, observability.",
+      "Proposes a measurable decision criterion before splitting.",
+      "Accepts that the answer may be 'not yet'."
+    ]
+  },
+  {
+    "id": "C4-CODE-01", "clusterCode": "C4", "kind": "coding", "title": "Rate Limiter",
+    "prompt": "Implement a token-bucket rate limiter with refillPerSec and capacity. allow() returns true if a request is allowed now.",
+    "timeLimitSec": 1500,
+    "starterCode": "export class TokenBucket {\n  constructor(private refillPerSec: number, private capacity: number) {}\n  allow(now: number = Date.now()): boolean { return true; }\n}",
+    "testCases": [
+      { "input": "capacity 5 refill 1/s; 5 quick calls",   "expected": "all true"            },
+      { "input": "capacity 5 refill 1/s; 6 quick calls",   "expected": "sixth returns false" },
+      { "input": "capacity 5 refill 1/s; wait 3s refill",  "expected": "3 more pass"         }
+    ]
+  },
+  {
+    "id": "C4-CODE-02", "clusterCode": "C4", "kind": "coding", "title": "Sharding Router",
+    "prompt": "Write shardFor(userId, shardCount) returning a stable shard index that is resilient to shardCount changing by one.",
+    "timeLimitSec": 1200,
+    "starterCode": "export function shardFor(userId: string, shardCount: number): number {\n  return 0;\n}",
+    "testCases": [
+      { "input": "userId stable, shardCount constant",   "expected": "same shard"                 },
+      { "input": "shardCount grows from 4 to 5",         "expected": "at most ~20% of keys move"  }
+    ]
+  },
+  {
+    "id": "C4-SIM-01", "clusterCode": "C4", "kind": "simulation", "title": "Architecture Review",
+    "prompt": "Present your system-design proposal to a skeptical staff engineer. They push on why you chose Kafka over SQS.",
+    "timeLimitSec": 900,
+    "roleContext": {
+      "you": "Proposing engineer",
+      "stakeholders": [
+        { "role": "Staff Engineer", "position": "Thinks SQS is simpler; wants justification for operational cost." },
+        { "role": "Engineering Manager", "position": "Cares about team learning curve and on-call." }
+      ]
+    },
+    "expectedOutputHint": "Name the specific requirement (ordering, replay, fan-out) that forces Kafka. Accept SQS if the requirement doesn't hold."
+  },
+  {
+    "id": "C4-SIM-02", "clusterCode": "C4", "kind": "simulation", "title": "PM Scope Negotiation",
+    "prompt": "The PM wants to ship a 'simple' new feature but the data model requires a migration that will take 4 weeks. Walk through the conversation.",
+    "timeLimitSec": 720,
+    "roleContext": {
+      "you": "Tech lead",
+      "stakeholders": [
+        { "role": "Product Manager", "position": "Has committed a public launch date." },
+        { "role": "Data Lead", "position": "Worried about concurrent migrations on the same table." }
+      ]
+    },
+    "expectedOutputHint": "Offer a minimal V1 that avoids the migration; frame V2 as a measurable investment."
+  },
+  {
+    "id": "C4-DESC-03", "clusterCode": "C4", "kind": "descriptive", "title": "Idempotency Design",
+    "prompt": "Describe how you would make a payment-initiation API idempotent for retries.",
+    "timeLimitSec": 480,
+    "rubricBullets": [
+      "Uses a client-provided idempotency key.",
+      "Stores request fingerprints with a TTL.",
+      "Returns the original response for duplicate keys.",
+      "Handles key-reuse with conflicting payloads."
+    ]
+  },
+  {
+    "id": "C4-MCQ-04", "clusterCode": "C4", "kind": "mcq", "title": "Read Replica Fallback",
+    "prompt": "A read replica lags 30 seconds. A user just wrote and is viewing the page. BEST approach?",
+    "timeLimitSec": 120,
+    "options": [
+      { "id": "a", "text": "Always read from replica." },
+      { "id": "b", "text": "Read-your-writes: pin to primary for the session window after a write." },
+      { "id": "c", "text": "Disable the replica." },
+      { "id": "d", "text": "Add a second replica." }
+    ],
+    "correctOptionId": "b"
+  },
+
+  {
+    "id": "C5-MCQ-01", "clusterCode": "C5", "kind": "mcq", "title": "Status Updates",
+    "prompt": "Which status update is most useful for a manager skimming on a Friday?",
+    "timeLimitSec": 120,
+    "options": [
+      { "id": "a", "text": "I did a lot of work this week." },
+      { "id": "b", "text": "Shipped order-cancel flow; 2 flaky tests remain; blocker: awaiting design on edge case X." },
+      { "id": "c", "text": "Still blocked." },
+      { "id": "d", "text": "Everything is fine." }
+    ],
+    "correctOptionId": "b"
+  },
+  {
+    "id": "C5-MCQ-02", "clusterCode": "C5", "kind": "mcq", "title": "Meeting Invitation",
+    "prompt": "You need a 30-minute decision from three stakeholders. Which invitation is best?",
+    "timeLimitSec": 120,
+    "options": [
+      { "id": "a", "text": "Subject: 'catch up'; no agenda." },
+      { "id": "b", "text": "Subject: 'Decision: go/no-go on migration'; agenda with 3 options and a pre-read link." },
+      { "id": "c", "text": "Reply-all email chain with 40 messages." },
+      { "id": "d", "text": "Slack thread with no deadline." }
+    ],
+    "correctOptionId": "b"
+  },
+  {
+    "id": "C5-MCQ-03", "clusterCode": "C5", "kind": "mcq", "title": "Escalation",
+    "prompt": "Your PR has been waiting 6 days for review and blocks a release. BEST escalation?",
+    "timeLimitSec": 120,
+    "options": [
+      { "id": "a", "text": "DM your manager at 11pm complaining." },
+      { "id": "b", "text": "Add a clear summary in the team channel: what is blocked, deadline, two paths forward." },
+      { "id": "c", "text": "Force-merge without review." },
+      { "id": "d", "text": "Wait another week." }
+    ],
+    "correctOptionId": "b"
+  },
+  {
+    "id": "C5-DESC-01", "clusterCode": "C5", "kind": "descriptive", "title": "Write a Decision Doc",
+    "prompt": "Draft the opening 3 paragraphs of a decision document recommending React Query over a bespoke cache layer. Assume an engineering-manager audience who skims.",
+    "timeLimitSec": 600,
+    "rubricBullets": [
+      "Leads with the recommendation in one sentence.",
+      "Names the 2-3 criteria that drove the decision.",
+      "Acknowledges the strongest counter-argument and why it loses.",
+      "Keeps prose concrete and under 250 words."
+    ]
+  },
+  {
+    "id": "C5-DESC-02", "clusterCode": "C5", "kind": "descriptive", "title": "Upward Update",
+    "prompt": "Write a Monday upward update covering last week: shipped X, blocked on Y, risks for next week, ask of the team.",
+    "timeLimitSec": 360,
+    "rubricBullets": [
+      "Three sections clearly labelled.",
+      "Ask is specific and actionable.",
+      "Risk is quantified or time-boxed.",
+      "Tone is neutral, not defensive."
+    ]
+  },
+  {
+    "id": "C5-CODE-01", "clusterCode": "C5", "kind": "coding", "title": "Changelog Generator",
+    "prompt": "Write a function that turns a list of commit messages into a markdown changelog grouped by conventional-commit type.",
+    "timeLimitSec": 1200,
+    "starterCode": "export function changelog(commits: string[]): string {\n  return '';\n}",
+    "testCases": [
+      { "input": "['feat: add login','fix: typo']", "expected": "## feat\\n- add login\\n## fix\\n- typo\\n" },
+      { "input": "[]",                               "expected": "" }
+    ]
+  },
+  {
+    "id": "C5-CODE-02", "clusterCode": "C5", "kind": "coding", "title": "Pretty-Print Slack Block",
+    "prompt": "Given a deploy status object, return a Slack-blocks-kit array that highlights failures.",
+    "timeLimitSec": 1200,
+    "starterCode": "export function slackBlocks(status: { service: string; failures: string[] }): unknown[] {\n  return [];\n}",
+    "testCases": [
+      { "input": "service payments no failures", "expected": "single ok block" },
+      { "input": "service payments 2 failures",  "expected": "header + 2 failure context blocks" }
+    ]
+  },
+  {
+    "id": "C5-SIM-01", "clusterCode": "C5", "kind": "simulation", "title": "Customer-Facing Outage",
+    "prompt": "Your team caused a 25-minute outage for a large customer. Walk through the apology email you send the customer's VP of Engineering.",
+    "timeLimitSec": 600,
+    "roleContext": {
+      "you": "Account-owning engineer",
+      "stakeholders": [
+        { "role": "Customer VP Engineering", "position": "Wants to know why it happened and what changes." },
+        { "role": "Your Engineering Manager", "position": "Wants the messaging to be truthful but careful." }
+      ]
+    },
+    "expectedOutputHint": "Own the failure, name the root cause, list 2-3 specific changes with dates."
+  },
+  {
+    "id": "C5-SIM-02", "clusterCode": "C5", "kind": "simulation", "title": "Interviewing a Skeptic",
+    "prompt": "You pitch a new internal tool to a senior engineer who is skeptical. Walk through the conversation.",
+    "timeLimitSec": 600,
+    "roleContext": {
+      "you": "Tool author",
+      "stakeholders": [ { "role": "Skeptical Engineer", "position": "Thinks it overlaps with existing tool." } ]
+    },
+    "expectedOutputHint": "Ask what would convince them, not just why they are wrong."
+  },
+  {
+    "id": "C5-DESC-03", "clusterCode": "C5", "kind": "descriptive", "title": "Meeting Summary",
+    "prompt": "Summarise a 45-minute architecture meeting into 5 bullets including owners and dates.",
+    "timeLimitSec": 240,
+    "rubricBullets": [
+      "Five bullets or fewer.",
+      "Each bullet has an owner and a due date.",
+      "Captures unresolved items explicitly.",
+      "No meta commentary."
+    ]
+  },
+  {
+    "id": "C5-MCQ-04", "clusterCode": "C5", "kind": "mcq", "title": "Feedback Framing",
+    "prompt": "Which is the best framing when giving critical feedback to a peer?",
+    "timeLimitSec": 120,
+    "options": [
+      { "id": "a", "text": "You always miss deadlines." },
+      { "id": "b", "text": "I noticed the last two tasks slipped. What is getting in the way?" },
+      { "id": "c", "text": "I don't want to nag you, but..." },
+      { "id": "d", "text": "Everyone says you're slow." }
+    ],
+    "correctOptionId": "b"
+  },
+
+  {
+    "id": "C6-MCQ-01", "clusterCode": "C6", "kind": "mcq", "title": "Train/Val Split",
+    "prompt": "Why is a time-based split preferred over a random split for a sales-forecasting model?",
+    "timeLimitSec": 150,
+    "options": [
+      { "id": "a", "text": "Random splits are faster to compute." },
+      { "id": "b", "text": "Random splits leak future information into training, overstating accuracy." },
+      { "id": "c", "text": "Random splits cannot be reproduced." },
+      { "id": "d", "text": "Time splits are always better for every model." }
+    ],
+    "correctOptionId": "b"
+  },
+  {
+    "id": "C6-MCQ-02", "clusterCode": "C6", "kind": "mcq", "title": "Regularisation",
+    "prompt": "Your model achieves 97% training accuracy and 64% validation accuracy. FIRST intervention?",
+    "timeLimitSec": 120,
+    "options": [
+      { "id": "a", "text": "Collect 10x more training data." },
+      { "id": "b", "text": "Add regularisation (L2, dropout) or reduce model capacity." },
+      { "id": "c", "text": "Switch to a larger model." },
+      { "id": "d", "text": "Deploy to production." }
+    ],
+    "correctOptionId": "b"
+  },
+  {
+    "id": "C6-MCQ-03", "clusterCode": "C6", "kind": "mcq", "title": "Auth Token",
+    "prompt": "Which statement about JWT is MOST accurate?",
+    "timeLimitSec": 150,
+    "options": [
+      { "id": "a", "text": "JWT tokens are encrypted by default." },
+      { "id": "b", "text": "JWT tokens are signed but not encrypted; payload is base64url-encoded." },
+      { "id": "c", "text": "JWT is safe to use with the 'none' algorithm if the client is trusted." },
+      { "id": "d", "text": "JWT cannot be revoked, therefore it cannot be used for auth." }
+    ],
+    "correctOptionId": "b"
+  },
+  {
+    "id": "C6-DESC-01", "clusterCode": "C6", "kind": "descriptive", "title": "Feature Leakage",
+    "prompt": "A teammate's model performs great in dev but collapses in production. You suspect feature leakage. Describe how you confirm it and fix it.",
+    "timeLimitSec": 600,
+    "rubricBullets": [
+      "Enumerates how the feature could have seen the label at training time.",
+      "Proposes a timeline-aware pipeline as the fix.",
+      "Checks calibration on held-out recent data.",
+      "Recognises the production monitoring gap that let it slip."
+    ]
+  },
+  {
+    "id": "C6-DESC-02", "clusterCode": "C6", "kind": "descriptive", "title": "ETL Design",
+    "prompt": "Design a nightly ETL that ingests CSVs from 40 vendors, validates schema, and loads into a warehouse. Keep it to 250 words.",
+    "timeLimitSec": 600,
+    "rubricBullets": [
+      "Splits extract, validate, load as idempotent stages.",
+      "Stores raw input for replay.",
+      "Uses a schema registry or per-vendor contract check.",
+      "Names one observability primitive (row count delta alert, null-rate alert)."
+    ]
+  },
+  {
+    "id": "C6-CODE-01", "clusterCode": "C6", "kind": "coding", "title": "Rolling Mean",
+    "prompt": "Write rollingMean(series, window) returning the simple moving average over a fixed window size. Pad with NaN.",
+    "timeLimitSec": 1200,
+    "starterCode": "export function rollingMean(series: number[], window: number): number[] {\n  return [];\n}",
+    "testCases": [
+      { "input": "[1,2,3,4,5], 3", "expected": "[NaN,NaN,2,3,4]" },
+      { "input": "[1], 3",          "expected": "[NaN]" }
+    ]
+  },
+  {
+    "id": "C6-CODE-02", "clusterCode": "C6", "kind": "coding", "title": "One-Hot Encoder",
+    "prompt": "Write oneHot(column) that returns a matrix with one column per unique category in insertion order.",
+    "timeLimitSec": 900,
+    "starterCode": "export function oneHot(column: string[]): { categories: string[]; matrix: number[][] } {\n  return { categories: [], matrix: [] };\n}",
+    "testCases": [
+      { "input": "['a','b','a']", "expected": "categories ['a','b'], matrix [[1,0],[0,1],[1,0]]" }
+    ]
+  },
+  {
+    "id": "C6-SIM-01", "clusterCode": "C6", "kind": "simulation", "title": "Model Review With PM",
+    "prompt": "You have a model that improves a business KPI by 3%. The PM asks whether to ship it. Walk through the conversation.",
+    "timeLimitSec": 900,
+    "roleContext": {
+      "you": "ML engineer",
+      "stakeholders": [
+        { "role": "Product Manager", "position": "Cares about user impact and A/B risks." },
+        { "role": "Data Scientist", "position": "Worries about fairness across segments." }
+      ]
+    },
+    "expectedOutputHint": "Name segment-level performance, rollout strategy, guardrail metrics."
+  },
+  {
+    "id": "C6-SIM-02", "clusterCode": "C6", "kind": "simulation", "title": "Security Review",
+    "prompt": "You present an API design to the security team. They ask about rate limiting and secret handling. Walk through your response.",
+    "timeLimitSec": 720,
+    "roleContext": {
+      "you": "Backend engineer",
+      "stakeholders": [
+        { "role": "Security Reviewer", "position": "Focused on OWASP top 10 and secret rotation." }
+      ]
+    },
+    "expectedOutputHint": "Cite concrete controls (WAF, per-user token bucket, secrets manager with rotation cadence)."
+  },
+  {
+    "id": "C6-MCQ-04", "clusterCode": "C6", "kind": "mcq", "title": "Cross-Validation",
+    "prompt": "For a 10,000-row dataset with class imbalance 1:50, which cross-validation scheme is most appropriate?",
+    "timeLimitSec": 150,
+    "options": [
+      { "id": "a", "text": "Simple k-fold with k=5." },
+      { "id": "b", "text": "Stratified k-fold with k=5." },
+      { "id": "c", "text": "Leave-one-out." },
+      { "id": "d", "text": "Single 80/20 split." }
+    ],
+    "correctOptionId": "b"
+  },
+  {
+    "id": "C6-DESC-03", "clusterCode": "C6", "kind": "descriptive", "title": "Explain a Model",
+    "prompt": "A sales manager asks why a customer was scored 'high risk' by your model. Describe your approach.",
+    "timeLimitSec": 480,
+    "rubricBullets": [
+      "Uses feature attribution (SHAP or permutation importance).",
+      "Translates numeric features into business language.",
+      "Acknowledges uncertainty; does not over-claim causality.",
+      "Offers a next step the sales manager can actually take."
+    ]
+  },
+
+  {
+    "id": "C7-MCQ-01", "clusterCode": "C7", "kind": "mcq", "title": "Owning an Ambiguous Task",
+    "prompt": "Your manager says 'our docs are a mess, can you look at it?' You have no specifics. BEST next step?",
+    "timeLimitSec": 120,
+    "options": [
+      { "id": "a", "text": "Guess at what is wanted and start rewriting." },
+      { "id": "b", "text": "Propose a 2-week scope covering the top 3 painful docs, confirm with the manager, then execute." },
+      { "id": "c", "text": "Refuse because it is ambiguous." },
+      { "id": "d", "text": "Wait for a formal ticket." }
+    ],
+    "correctOptionId": "b"
+  },
+  {
+    "id": "C7-MCQ-02", "clusterCode": "C7", "kind": "mcq", "title": "Missing a Deadline",
+    "prompt": "You will miss a 2-week commitment by 3 days. BEST action?",
+    "timeLimitSec": 120,
+    "options": [
+      { "id": "a", "text": "Stay quiet and hope no one notices." },
+      { "id": "b", "text": "Raise it at the earliest clear signal, with a specific revised date and the reason." },
+      { "id": "c", "text": "Blame the PM for unclear scope." },
+      { "id": "d", "text": "Push the work onto someone else." }
+    ],
+    "correctOptionId": "b"
+  },
+  {
+    "id": "C7-MCQ-03", "clusterCode": "C7", "kind": "mcq", "title": "Unclear Escalation Path",
+    "prompt": "You notice a security vulnerability in an adjacent team's code. You do not know who owns it. BEST first step?",
+    "timeLimitSec": 120,
+    "options": [
+      { "id": "a", "text": "Post about it publicly on social media." },
+      { "id": "b", "text": "Report it via the internal security channel or your manager, with reproducible details." },
+      { "id": "c", "text": "Fix it yourself without telling anyone." },
+      { "id": "d", "text": "Ignore it — it's not your code." }
+    ],
+    "correctOptionId": "b"
+  },
+  {
+    "id": "C7-DESC-01", "clusterCode": "C7", "kind": "descriptive", "title": "Pick One Thing",
+    "prompt": "You have 3 half-finished projects and a new urgent ask. Describe how you pick what to actually complete this week.",
+    "timeLimitSec": 480,
+    "rubricBullets": [
+      "Uses a decision criterion (customer impact, reversibility, blast radius).",
+      "Acknowledges opportunity cost of WIP.",
+      "Communicates the choice to stakeholders proactively.",
+      "Reserves time to actually finish one thing."
+    ]
+  },
+  {
+    "id": "C7-DESC-02", "clusterCode": "C7", "kind": "descriptive", "title": "A Judgment Call",
+    "prompt": "Describe a decision you made where you had to choose between two good options with partial information. What did you decide, and what happened?",
+    "timeLimitSec": 480,
+    "rubricBullets": [
+      "Names the options specifically.",
+      "Makes the decision criterion explicit.",
+      "Accepts the downside of the path not taken.",
+      "Honest retrospective — not all decisions work out."
+    ]
+  },
+  {
+    "id": "C7-CODE-01", "clusterCode": "C7", "kind": "coding", "title": "Task Scheduler",
+    "prompt": "Given a list of tasks with priorities and due dates, return an order of execution that minimises late tasks.",
+    "timeLimitSec": 1500,
+    "starterCode": "export function schedule(tasks: { id: string; priority: number; dueInHours: number; estimateHours: number }[]): string[] {\n  return [];\n}",
+    "testCases": [
+      { "input": "tasks with clear dominant priority", "expected": "highest priority first" },
+      { "input": "tight deadlines competing",          "expected": "no late tasks when possible" }
+    ]
+  },
+  {
+    "id": "C7-CODE-02", "clusterCode": "C7", "kind": "coding", "title": "Escalation Policy",
+    "prompt": "Write shouldEscalate(alert) that returns true when an alert has been open past its SLA or has touched a priority-1 customer.",
+    "timeLimitSec": 900,
+    "starterCode": "export function shouldEscalate(alert: { openedAt: number; slaMs: number; customerTier: 'p1'|'p2'|'p3' }, now: number = Date.now()): boolean {\n  return false;\n}",
+    "testCases": [
+      { "input": "p1 customer, within SLA",        "expected": "true"  },
+      { "input": "p3 customer, beyond SLA",         "expected": "true"  },
+      { "input": "p3 customer, within SLA",         "expected": "false" }
+    ]
+  },
+  {
+    "id": "C7-SIM-01", "clusterCode": "C7", "kind": "simulation", "title": "Pushback Against Scope Creep",
+    "prompt": "Your PM adds a fourth feature to a sprint that already has three. Walk through the conversation.",
+    "timeLimitSec": 600,
+    "roleContext": {
+      "you": "Engineering owner",
+      "stakeholders": [
+        { "role": "Product Manager", "position": "Believes the fourth feature is tiny." },
+        { "role": "QA Lead", "position": "Worried about testing window." }
+      ]
+    },
+    "expectedOutputHint": "Accept OR decline with a specific reason; offer a tradeoff, not a flat 'no'."
+  },
+  {
+    "id": "C7-SIM-02", "clusterCode": "C7", "kind": "simulation", "title": "Reliability Review",
+    "prompt": "You are on-call and your service has breached its SLO 3 times this month. Walk through the weekly reliability review.",
+    "timeLimitSec": 720,
+    "roleContext": {
+      "you": "Service owner",
+      "stakeholders": [
+        { "role": "Engineering Manager", "position": "Wants a concrete plan." },
+        { "role": "SRE Partner", "position": "Offers shared ownership but needs reciprocal investment." }
+      ]
+    },
+    "expectedOutputHint": "Show concrete causes per breach, a top-3 investment list, and an owner per item."
+  },
+
+  {
+    "id": "C8-MCQ-01", "clusterCode": "C8", "kind": "mcq", "title": "New Language First Week",
+    "prompt": "You are given one week to become productive in a new language. Which is the strongest single habit?",
+    "timeLimitSec": 120,
+    "options": [
+      { "id": "a", "text": "Read the entire language specification end-to-end." },
+      { "id": "b", "text": "Build two small, real tools end-to-end in the language." },
+      { "id": "c", "text": "Watch 20 hours of YouTube tutorials." },
+      { "id": "d", "text": "Read StackOverflow only." }
+    ],
+    "correctOptionId": "b"
+  },
+  {
+    "id": "C8-MCQ-02", "clusterCode": "C8", "kind": "mcq", "title": "Switching Domains",
+    "prompt": "You move from payments to ML infra. What is the highest-leverage first action?",
+    "timeLimitSec": 120,
+    "options": [
+      { "id": "a", "text": "Rewrite existing code in the new domain's idioms." },
+      { "id": "b", "text": "Find the three most-used systems and read their design docs before touching code." },
+      { "id": "c", "text": "Ignore domain conventions because 'software is software'." },
+      { "id": "d", "text": "Only attend meetings; avoid writing code." }
+    ],
+    "correctOptionId": "b"
+  },
+  {
+    "id": "C8-MCQ-03", "clusterCode": "C8", "kind": "mcq", "title": "Feedback Loop",
+    "prompt": "Your tech lead gives you feedback you disagree with. BEST response?",
+    "timeLimitSec": 120,
+    "options": [
+      { "id": "a", "text": "Dismiss it; you know better." },
+      { "id": "b", "text": "Ask questions to understand the underlying concern, then decide how to act." },
+      { "id": "c", "text": "Agree in the moment but ignore it afterwards." },
+      { "id": "d", "text": "Escalate to their manager." }
+    ],
+    "correctOptionId": "b"
+  },
+  {
+    "id": "C8-DESC-01", "clusterCode": "C8", "kind": "descriptive", "title": "Learning Plan",
+    "prompt": "Draft a 4-week learning plan to become productive in a new codebase of 300k LoC. Include concrete weekly outputs.",
+    "timeLimitSec": 600,
+    "rubricBullets": [
+      "Weekly outputs are measurable (merged PRs, doc contributions, on-call shadowing).",
+      "Ramps from read-only in week 1 to owner in week 4.",
+      "Explicit feedback checkpoints with a mentor.",
+      "Acknowledges tradeoffs against ongoing project work."
+    ]
+  },
+  {
+    "id": "C8-DESC-02", "clusterCode": "C8", "kind": "descriptive", "title": "Acting on Feedback",
+    "prompt": "Describe a piece of feedback you received in the last year, what you did with it, and what changed.",
+    "timeLimitSec": 360,
+    "rubricBullets": [
+      "Specific feedback, not generic.",
+      "Clear action taken, with a timeline.",
+      "Observable change in outcome.",
+      "Honest about what didn't change."
+    ]
+  },
+  {
+    "id": "C8-CODE-01", "clusterCode": "C8", "kind": "coding", "title": "Translate JS to Python",
+    "prompt": "Given a small JS pure function, write an equivalent Python implementation with identical behaviour.",
+    "timeLimitSec": 1200,
+    "starterCode": "# Translate: export const sum = (xs: number[]): number => xs.reduce((a,b) => a+b, 0)\ndef sum_list(xs):\n    return 0\n",
+    "testCases": [
+      { "input": "[1,2,3]", "expected": "6" },
+      { "input": "[]",       "expected": "0" }
+    ]
+  },
+  {
+    "id": "C8-CODE-02", "clusterCode": "C8", "kind": "coding", "title": "Pick Up New Library",
+    "prompt": "Using a HTTP client library you've never seen, write a function that fetches a URL with a 2-second timeout and retries once.",
+    "timeLimitSec": 1500,
+    "starterCode": "export async function fetchOnce(url: string): Promise<string> {\n  return '';\n}",
+    "testCases": [
+      { "input": "valid url", "expected": "response body string" },
+      { "input": "timeout once then 200", "expected": "response body on retry" }
+    ]
+  },
+  {
+    "id": "C8-SIM-01", "clusterCode": "C8", "kind": "simulation", "title": "Onboarding Conversation",
+    "prompt": "You are two weeks into a new team. Your 1:1 with your manager starts. Walk through the first 15 minutes.",
+    "timeLimitSec": 600,
+    "roleContext": {
+      "you": "New joiner",
+      "stakeholders": [ { "role": "Manager", "position": "Wants to know what's working, what isn't, and how to help." } ]
+    },
+    "expectedOutputHint": "Come prepared with a specific win, a specific block, and a specific ask."
+  },
+  {
+    "id": "C8-SIM-02", "clusterCode": "C8", "kind": "simulation", "title": "Learning-in-Public",
+    "prompt": "You present a retro of a new technology you tried that partially worked. Walk through the presentation.",
+    "timeLimitSec": 720,
+    "roleContext": {
+      "you": "Presenter",
+      "stakeholders": [
+        { "role": "Tech Lead", "position": "Wants an honest assessment." },
+        { "role": "Junior Peer", "position": "Is considering the same tech." }
+      ]
+    },
+    "expectedOutputHint": "Cover what worked, what didn't, what you'd try next — no defensiveness."
+  },
+  {
+    "id": "C8-MCQ-04", "clusterCode": "C8", "kind": "mcq", "title": "Unblocking Yourself",
+    "prompt": "You've been stuck on a subtle bug for 3 hours. BEST next step?",
+    "timeLimitSec": 120,
+    "options": [
+      { "id": "a", "text": "Keep pushing — giving up is weakness." },
+      { "id": "b", "text": "Write a short rubber-duck summary, then ask a peer with fresh eyes." },
+      { "id": "c", "text": "Refactor everything to start clean." },
+      { "id": "d", "text": "Paste the whole file into Stack Overflow." }
+    ],
+    "correctOptionId": "b"
+  },
+  {
+    "id": "C8-DESC-03", "clusterCode": "C8", "kind": "descriptive", "title": "Agility Self-Assessment",
+    "prompt": "Rate your learning agility 1-10 and justify with two specific examples from the last 6 months.",
+    "timeLimitSec": 360,
+    "rubricBullets": [
+      "Honest self-rating — not anchored at 10.",
+      "Two specific, non-overlapping examples.",
+      "Measurable outcomes.",
+      "Names a concrete area of weakness."
+    ]
+  }
+]
