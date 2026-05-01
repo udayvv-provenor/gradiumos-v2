@@ -11,14 +11,19 @@ interface AiStatus { groq: { configured: boolean; model: string|null }; serper: 
 // (Lesson stream is the gap-driven tutor surface) and INSIDE Shift (in-context
 // partner drawer). Free-form chat would let learners drift away from gap-closing.
 const NAV = [
-  { to: '/dashboard',     label: 'Dashboard',      icon: '⊞' },
-  { to: '/market',        label: 'Market Intel',   icon: '◷' },
-  { to: '/profile',       label: 'Profile',        icon: '◉' },
-  { to: '/portfolio',     label: 'Portfolio',      icon: '⬡' },
-  { to: '/learn',         label: 'Learn',          icon: '◊' },
-  { to: '/assessments',   label: 'Assessments',    icon: '✎' },
-  { to: '/opportunities', label: 'Opportunities',  icon: '⚡' },
-  { to: '/applications',  label: 'Applications',   icon: '◳' },
+  { to: '/dashboard',          label: 'Dashboard',      icon: '⊞' },
+  { to: '/market',             label: 'Market Intel',   icon: '◷' },
+  { to: '/profile',            label: 'Profile',        icon: '◉' },
+  { to: '/portfolio',          label: 'Portfolio',      icon: '⬡' },
+  { to: '/learn',              label: 'Learn',          icon: '◊' },
+  { to: '/assessments',        label: 'Assessments',    icon: '✎' },
+  { to: '/opportunities',      label: 'Opportunities',  icon: '⚡' },
+  { to: '/applications',       label: 'Applications',   icon: '◳' },
+]
+
+const NAV_SETTINGS = [
+  { to: '/settings/privacy',        label: 'Privacy & Data',      icon: '⊕' },
+  { to: '/settings/notifications',  label: 'Notifications',       icon: '◎' },
 ]
 
 interface SidebarProps {
@@ -96,6 +101,15 @@ export function Sidebar({ bellSlot }: SidebarProps) {
             isActive ? 'text-white bg-accent/15 border-l-accent' : 'text-white/60 border-l-transparent hover:text-white hover:bg-white/[0.06]'
           )}>
             <span className="text-sm w-4 text-center">{icon}</span>{label}
+          </NavLink>
+        ))}
+        <div className="px-5 mb-1 mt-3 text-[10px] text-white/30 uppercase tracking-[0.8px]">Settings</div>
+        {NAV_SETTINGS.map(({ to, label, icon }) => (
+          <NavLink key={to} to={to} className={({ isActive }) => clsx(
+            'flex items-center gap-2.5 px-5 py-2 text-[12px] font-medium border-l-[3px] transition-all duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-400',
+            isActive ? 'text-white bg-accent/15 border-l-accent' : 'text-white/50 border-l-transparent hover:text-white hover:bg-white/[0.06]'
+          )}>
+            <span className="text-xs w-4 text-center">{icon}</span>{label}
           </NavLink>
         ))}
       </nav>

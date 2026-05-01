@@ -12,3 +12,6 @@ data/public/
 # Coverage & test artifacts
 coverage/
 *.lcov
+
+Demo Working/
+backend/

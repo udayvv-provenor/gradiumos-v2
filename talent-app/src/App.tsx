@@ -30,6 +30,8 @@ import Shift from './pages/Shift'
 // BC 128-133 — Notification centre (Phase D)
 import NotificationsArchive from './pages/NotificationsArchive'
 import NotificationSettings from './pages/NotificationSettings'
+// DPDP — Privacy & consent settings
+import PrivacySettings from './pages/PrivacySettings'
 
 function Private({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth()
@@ -107,6 +109,8 @@ function AppRoutes() {
         {/* BC 128-133 — Notification pages (Phase D) */}
         <Route path="/notifications/archive" element={<NotificationsArchive />} />
         <Route path="/settings/notifications" element={<NotificationSettings />} />
+        {/* DPDP — Privacy & consent settings */}
+        <Route path="/settings/privacy" element={<PrivacySettings />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Route>
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
