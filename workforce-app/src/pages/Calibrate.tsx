@@ -245,6 +245,14 @@ export default function Calibrate() {
           {calibrateQ.isLoading ? (
             <div className="text-slate text-sm py-4">Loading…</div>
           ) : cal ? (
+            cal.deviations.every((d) => d.yourTarget === 0) ? (
+              <div className="py-6 text-center">
+                <div className="text-[13px] font-semibold text-navy mb-1">No targets set yet</div>
+                <p className="text-xs text-slate max-w-xs mx-auto">
+                  Use the cluster sliders on the left to define your hiring bar — we'll show how you compare to peer employers in real time.
+                </p>
+              </div>
+            ) : (
             <div className="flex flex-col gap-3">
               {cal.deviations.map((d) => (
                 <div key={d.clusterCode} className="flex items-center gap-2">
@@ -272,6 +280,7 @@ export default function Calibrate() {
                 </div>
               ))}
             </div>
+            )
           ) : (
             <div className="text-red-600 text-sm">Failed to load benchmark.</div>
           )}
