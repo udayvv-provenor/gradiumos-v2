@@ -72,6 +72,14 @@ model User {
   updatedAt     DateTime       @updatedAt
   employerId    String?
   learnerId     String?        @unique
+  // Option B — email verification
+  emailVerified          Boolean   @default(false)
+  emailVerifiedAt        DateTime?
+  emailVerifyToken       String?   @unique  // short-lived plaintext token (hashed not needed; single-use + expiry)
+  emailVerifyExpiry      DateTime?
+  // Option B — password reset
+  passwordResetToken     String?   @unique  // bcrypt-hashed reset token
+  passwordResetExpiry    DateTime?
   refreshTokens RefreshToken[]
   employer      Employer?      @relation(fields: [employerId], references: [id], onDelete: Cascade)
   institution   Institution?   @relation(fields: [institutionId], references: [id], onDelete: Cascade)

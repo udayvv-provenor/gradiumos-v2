@@ -139,13 +139,14 @@ async function main() {
   // 2. Dean user for SRM (Campus demo login)
   await prisma.user.upsert({
     where: { email: 'krishnamurthy@srm.edu' },
-    update: { passwordHash: DEMO_PASSWORD_HASH, institutionId: srmInst.id },
+    update: { passwordHash: DEMO_PASSWORD_HASH, institutionId: srmInst.id, emailVerified: true },
     create: {
       email: 'krishnamurthy@srm.edu',
       name: 'Dr. R. Krishnamurthy',
       passwordHash: DEMO_PASSWORD_HASH,
       role: Role.DEAN,
       institutionId: srmInst.id,
+      emailVerified: true,    // Demo accounts bypass email verification
     },
   });
 
@@ -161,13 +162,14 @@ async function main() {
   // 4. TA_LEAD user for Freshworks (Workforce demo login)
   await prisma.user.upsert({
     where: { email: 'sarita.rajan@freshworks.com' },
-    update: { passwordHash: DEMO_PASSWORD_HASH, employerId: freshworksEmp.id },
+    update: { passwordHash: DEMO_PASSWORD_HASH, employerId: freshworksEmp.id, emailVerified: true },
     create: {
       email: 'sarita.rajan@freshworks.com',
       name: 'Sarita Rajan',
       passwordHash: DEMO_PASSWORD_HASH,
       role: Role.TA_LEAD,
       employerId: freshworksEmp.id,
+      emailVerified: true,    // Demo accounts bypass email verification
     },
   });
 
@@ -223,6 +225,7 @@ async function main() {
         role: Role.LEARNER,
         institutionId: srmInst.id,
         learnerId: arjun.id,
+        emailVerified: true,    // Demo accounts bypass email verification
       },
     });
     console.log('  ✓ Demo learner created: Arjun Patel (arjun.patel@srm.edu)');

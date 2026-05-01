@@ -18,6 +18,7 @@ import { Role, Archetype, ClusterCode, Prisma } from '@prisma/client';
 import { randomBytes } from 'crypto';
 import { seedDefaultConsent } from '../consent/consentService.js';
 import { sendWelcomeEmail } from '../email/emailService.js';
+import { sendVerificationEmail } from '../auth/passwordResetService.js';
 
 const DEFAULT_WEIGHTS: Record<ClusterCode, number> = {
   C1: 0.18, C2: 0.16, C3: 0.15, C4: 0.16, C5: 0.10, C6: 0.10, C7: 0.10, C8: 0.05,
@@ -128,6 +129,8 @@ export async function signupInstitution(args: {
   // BC 41 — include inviteCode in context so the frontend can display it in Settings.
   const env_ = await tokenisedEnvelope(user.id, { institutionId: inst.id, userId: user.id, institutionName: inst.name, inviteCode });
   void sendWelcomeEmail({ to: args.email, name: args.name, role: 'institution', inviteCode });
+  // Option B — send email verification (fire-and-forget)
+  void sendVerificationEmail(user.id, args.email, args.name);
   return { ...env_, inviteCode };
 }
 
@@ -175,6 +178,8 @@ export async function signupEmployer(args: {
   // BC 42 — include both employerId and userId in context.
   const env_ = await tokenisedEnvelope(user.id, { employerId: employer.id, userId: user.id, employerName: employer.name });
   void sendWelcomeEmail({ to: args.email, name: args.name, role: 'employer' });
+  // Option B — send email verification (fire-and-forget)
+  void sendVerificationEmail(user.id, args.email, args.name);
   return env_;
 }
 
@@ -295,5 +300,7 @@ export async function signupLearner(args: {
 
   const env_ = await tokenisedEnvelope(user.id, { institutionId: inst.id, userId: user.id, institutionName: inst.name, learnerId: learner.id });
   void sendWelcomeEmail({ to: args.email, name: args.name, role: 'learner' });
+  // Option B — send email verification (fire-and-forget)
+  void sendVerificationEmail(user.id, args.email, args.name);
   return { ...env_, institutionName: inst.name };
 }
