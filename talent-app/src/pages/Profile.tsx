@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { apiFetch, apiFormFetch } from '../lib/api'
@@ -24,15 +24,13 @@ export default function Profile() {
   const profileQ = useQuery<{ profile: ResumeProfile | null }>({
     queryKey: ['my-profile'],
     queryFn: () => apiFetch('/api/talent/me/profile'),
-    onError: () => null,
-  } as Parameters<typeof useQuery>[0])
+  } as any)
 
   const recsQ = useQuery<TrackRecommendation[]>({
     queryKey: ['track-recommendations'],
     queryFn: () => apiFetch('/api/talent/me/track-recommendations'),
     enabled: !!profileQ.data?.profile,
-    onError: () => null,
-  } as Parameters<typeof useQuery>[0])
+  } as any)
 
   const uploadJSON = useMutation<{ parsed: ResumeProfile }, Error, string>({
     mutationFn: (text) => apiFetch('/api/talent/me/profile/resume', { method: 'POST', body: JSON.stringify({ text }) }),
@@ -301,7 +299,7 @@ function PrimaryPathButton(
     queryFn:  () => apiFetch<{ learner?: { careerTracks?: { id: string; name: string; isPrimary: boolean }[]; primaryCareerTrackId?: string | null } }>('/api/auth/me'),
     staleTime: 0,
     refetchOnMount: 'always',
-  } as Parameters<typeof useQuery>[0]) as { data: { learner?: { careerTracks?: { id: string; name: string; isPrimary: boolean }[]; primaryCareerTrackId?: string | null } } | undefined }
+  } as any) as { data: { learner?: { careerTracks?: { id: string; name: string; isPrimary: boolean }[]; primaryCareerTrackId?: string | null } } | undefined }
 
   const primaryTrackId =
     meQ.data?.learner?.primaryCareerTrackId ??

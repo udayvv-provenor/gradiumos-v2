@@ -1,4 +1,4 @@
-/**
+﻿/**
  * BC 105 + BC 106 + BC 108 — Cohort Gap Drill-Down
  *
  * Page structure:
@@ -50,22 +50,19 @@ export default function CohortGapDrillDown() {
     queryKey: ['cohort-gap', careerTrackId],
     queryFn: () => apiFetch(`/api/v1/campus/career-tracks/${careerTrackId}/gap`),
     enabled: !!careerTrackId,
-    onError: (e: Error) => showToast(e.message),
-  } as Parameters<typeof useQuery>[0])
+  } as any)
 
   const cohortQ = useQuery<CohortDrillResult>({
     queryKey: ['cohort-drill', careerTrackId, page],
     queryFn: () => apiFetch(`/api/v1/campus/career-tracks/${careerTrackId}/cohort?page=${page}&pageSize=25`),
     enabled: !!careerTrackId,
-    onError: (e: Error) => showToast(e.message),
-  } as Parameters<typeof useQuery>[0])
+  } as any)
 
   const radarQ = useQuery<LearnerRadar>({
     queryKey: ['learner-radar', radarLearnerId],
     queryFn: () => apiFetch(`/api/v1/campus/learners/${radarLearnerId}/radar`),
     enabled: !!radarLearnerId,
-    onError: (e: Error) => showToast(e.message),
-  } as Parameters<typeof useQuery>[0])
+  } as any)
 
   const gap = gapQ.data
   const cohort = cohortQ.data

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { apiFetch } from '../lib/api'
 import { showToast } from '../components/Toast'
@@ -31,16 +31,14 @@ export default function Learners() {
   const { data: learners = [], isLoading } = useQuery<Learner[]>({
     queryKey: ['campus-learners'],
     queryFn: () => apiFetch('/api/campus/learners'),
-    onError: (e: Error) => showToast(e.message),
-  } as Parameters<typeof useQuery>[0])
+  } as any)
 
   // v3.1.1 — fetch invite code from server (was previously read from
   // user.inviteCode which is null after a /login flow). API source is reliable.
   const { data: institution } = useQuery<{ id: string; name: string; inviteCode: string }>({
     queryKey: ['campus-institution'],
     queryFn: () => apiFetch('/api/campus/me/institution'),
-    onError: (e: Error) => showToast(e.message),
-  } as Parameters<typeof useQuery>[0])
+  } as any)
 
   const addMutation = useMutation<CreateLearnerResponse, Error, { name: string; email: string }>({
     mutationFn: data => apiFetch('/api/campus/learners', { method: 'POST', body: JSON.stringify(data) }),

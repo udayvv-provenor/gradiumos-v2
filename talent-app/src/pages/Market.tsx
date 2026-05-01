@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+﻿import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { apiFetch } from '../lib/api'
 import { showToast } from '../components/Toast'
 import { MarketIntelPanel, type MarketSnapshot } from '../components/MarketIntel/MarketIntelPanel'
@@ -21,8 +21,7 @@ export default function Market() {
   const { data, isLoading } = useQuery<TalentMarketIntel>({
     queryKey: ['market-intel'],
     queryFn: () => apiFetch('/api/talent/me/market-intel'),
-    onError: (e: Error) => showToast(e.message),
-  } as Parameters<typeof useQuery>[0])
+  } as any)
 
   async function refresh() {
     setRefreshing(true)

@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+﻿import { useQuery } from '@tanstack/react-query'
 import { Link, useNavigate } from 'react-router-dom'
 import { apiFetch } from '../lib/api'
 import { showToast } from '../components/Toast'
@@ -16,8 +16,7 @@ export default function CareerTracks() {
   const { data: tracks = [], isLoading, isError } = useQuery<CareerTrack[]>({
     queryKey: ['career-tracks'],
     queryFn: () => apiFetch('/api/campus/career-tracks'),
-    onError: (e: Error) => showToast(e.message),
-  } as Parameters<typeof useQuery>[0])
+  } as any)
 
   return (
     <div>

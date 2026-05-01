@@ -39,8 +39,7 @@ export default function Dashboard() {
     refetchOnMount: 'always',
     refetchOnWindowFocus: true,
     staleTime: 0,
-    onError: (e: Error) => showToast(e.message),
-  } as Parameters<typeof useQuery>[0])
+  } as any)
 
   const gapsQ = useQuery<CohortGapCluster[]>({
     queryKey: ['campus-gaps'],
@@ -48,8 +47,7 @@ export default function Dashboard() {
     refetchOnMount: 'always',
     refetchOnWindowFocus: true,
     staleTime: 0,
-    onError: (e: Error) => showToast(e.message),
-  } as Parameters<typeof useQuery>[0])
+  } as any)
 
   // v3.1.1 — per-track performance overview (was in v1/v2 demos, dropped in v3 rebuild, restored here)
   const tracksOverviewQ = useQuery<Array<{
@@ -63,8 +61,7 @@ export default function Dashboard() {
     refetchOnMount: 'always',
     refetchOnWindowFocus: true,
     staleTime: 0,
-    onError: (e: Error) => showToast(e.message),
-  } as Parameters<typeof useQuery>[0])
+  } as any)
 
   const kpis = kpisQ.data
   const gaps = gapsQ.data ?? []
@@ -80,8 +77,7 @@ export default function Dashboard() {
     queryKey: ['dashboard-drill-gap', drillTrackId],
     queryFn: () => apiFetch(`/api/campus/career-tracks/${drillTrackId!}/gap-report`),
     enabled: !!drillTrackId,
-    onError: () => null,
-  } as Parameters<typeof useQuery>[0])
+  } as any)
   const drillGap = drillGapQ.data
   const drillTrack = tracksOverview.find(t => t.id === drillTrackId)
 
@@ -358,7 +354,7 @@ function PublicProfileCard() {
   const q = useQuery({
     queryKey: ['institution-public-profile'],
     queryFn: () => apiFetch<{ profile: PubProfile; source: 'live'|'db-cache'|'fallback' }>('/api/campus/me/institution/public-profile'),
-  } as Parameters<typeof useQuery>[0]) as { data: { profile: PubProfile; source: 'live'|'db-cache'|'fallback' } | undefined; isLoading: boolean; refetch: () => void }
+  } as any) as { data: { profile: PubProfile; source: 'live'|'db-cache'|'fallback' } | undefined; isLoading: boolean; refetch: () => void }
   if (q.isLoading) return <div className="bg-white border border-rule rounded-md p-4 mb-5 text-xs text-slate">Pulling your institution's public footprint live (NIRF + NAAC + AISHE)…</div>
   if (!q.data) return null
   const { profile, source } = q.data
@@ -418,8 +414,7 @@ function BridgeToBarWidget() {
     queryKey: ['bridge-to-bar'],
     queryFn: () => apiFetch('/api/v1/campus/bridge-to-bar'),
     staleTime: 60_000,
-    onError: () => null,
-  } as Parameters<typeof useQuery>[0])
+  } as any)
 
   if (q.isLoading) return null
   if (!q.data) return null

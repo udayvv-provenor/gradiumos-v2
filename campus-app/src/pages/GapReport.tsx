@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router-dom'
+﻿import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { apiFetch } from '../lib/api'
 import { showToast } from '../components/Toast'
@@ -22,8 +22,7 @@ export default function GapReport() {
   const { data, isLoading } = useQuery<GapReport>({
     queryKey: ['gap-report', careerTrackId],
     queryFn: () => apiFetch(`/api/campus/career-tracks/${careerTrackId!}/gap-report`),
-    onError: (e: Error) => showToast(e.message),
-  } as Parameters<typeof useQuery>[0])
+  } as any)
 
   if (isLoading) return <div className="text-slate text-sm p-4">Computing gap report…</div>
   if (!data)     return <div className="text-red-600 text-sm p-4">Couldn't load.</div>

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * BC 128-133 — Notification drawer (Phase D)
  *
  * Bell icon with unread badge + slide-in drawer.
@@ -54,7 +54,7 @@ export function useNotifications(archive = false) {
     ),
     refetchInterval: 30_000,
     staleTime: 20_000,
-  } as Parameters<typeof useQuery>[0]) as { data: NotificationsResponse | undefined; isLoading: boolean }
+  } as any) as { data: NotificationsResponse | undefined; isLoading: boolean }
 }
 
 // ─── Bell button (embed in Layout/Sidebar) ───────────────────────────────────

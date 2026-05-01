@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Discovery — BC 102-103
  *
  * Candidate discovery panel for a role. Shows ranked candidates with
@@ -124,8 +124,7 @@ export default function Discovery() {
     queryKey: ['discovery', roleId, queryString],
     queryFn: () => apiFetch(`/api/v1/workforce/roles/${roleId!}/discovery?${queryString}`),
     staleTime: 30_000,
-    onError: (e: Error) => showToast(e.message),
-  } as Parameters<typeof useQuery>[0]) as { data: DiscoveryResponse | undefined; isLoading: boolean }
+  } as any) as { data: DiscoveryResponse | undefined; isLoading: boolean }
 
   const data = discoveryQ.data
   const candidates = data?.candidates ?? []

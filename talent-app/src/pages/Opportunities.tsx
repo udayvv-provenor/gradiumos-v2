@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { apiFetch } from '../lib/api'
@@ -138,14 +138,12 @@ export default function Opportunities() {
     queryKey: ['v1-opportunities', minMatch, careerTrackId, city],
     queryFn: () =>
       apiFetch<OpportunitiesV2Response>(`/api/v1/talent/me/opportunities${qs.toString() ? `?${qs.toString()}` : ''}`),
-    onError: (e: Error) => showToast(e.message),
   } as Parameters<typeof useQuery<OpportunitiesV2Response>>[0])
 
   // Fetch existing applications to pre-populate applied state
   const { data: appsData } = useQuery<{ applications: { roleId: string }[] }>({
     queryKey: ['v1-my-applications'],
     queryFn: () => apiFetch<{ applications: { roleId: string }[] }>('/api/v1/talent/me/applications'),
-    onError: () => undefined,
   } as Parameters<typeof useQuery<{ applications: { roleId: string }[] }>>[0])
   const appliedRoleIds = new Set((appsData?.applications ?? []).map((a) => a.roleId))
 

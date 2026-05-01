@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+﻿import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { apiFetch } from '../../lib/api'
 import { showToast } from '../../components/Toast'
@@ -18,8 +18,7 @@ export default function LearnIndexPage() {
     staleTime: 0,
     refetchOnMount: 'always',
     refetchOnWindowFocus: true,
-    onError:  (e: Error) => showToast(e.message),
-  } as Parameters<typeof useQuery>[0])
+  } as any)
 
   if (isLoading) return <div className="text-slate text-sm p-4">Loading your learning paths…</div>
   if (!data)     return <div className="text-red-600 text-sm p-4">Couldn't load.</div>
@@ -142,7 +141,7 @@ export default function LearnIndexPage() {
                           )}
                         </div>
                         <div className="text-[10px] text-slate font-mono mt-0.5">
-                          {s.code} · {s.practiceCount} practice items{!s.authored && ' · concept content coming'} · mastery {Math.round(s.mastery * 100)}%
+                          {s.code} · {s.practiceCount} practice items{!s.authored && ' · concept content coming'} · mastery {Math.round((s.mastery ?? 0) * 100)}%
                         </div>
                         {locked && s.lockReason && (
                           <div className="text-[10px] text-amber-700 mt-0.5">{s.lockReason}</div>

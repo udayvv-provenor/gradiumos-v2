@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../state/AuthContext'
@@ -44,18 +44,16 @@ export default function Dashboard() {
   const kpisQ = useQuery<KpiData>({
     queryKey: ['workforce-kpis'],
     queryFn: () => apiFetch('/api/workforce/overview/kpis'),
-    onError: (e: Error) => showToast(e.message),
     staleTime: 0, refetchOnMount: 'always',
-  } as Parameters<typeof useQuery>[0])
+  } as any)
   const kpis = kpisQ.data
 
   // Role list — for picker
   const rolesQ = useQuery<Role[]>({
     queryKey: ['roles-list'],
     queryFn: () => apiFetch('/api/workforce/roles'),
-    onError: () => null,
     staleTime: 0, refetchOnMount: 'always',
-  } as Parameters<typeof useQuery>[0])
+  } as any)
   const roles = rolesQ.data ?? []
 
   // Selected role + city
@@ -71,9 +69,8 @@ export default function Dashboard() {
     queryKey: ['role-insight', selectedRoleId, city],
     queryFn: () => apiFetch(`/api/workforce/roles/${selectedRoleId}/insight?city=${encodeURIComponent(city)}`),
     enabled: !!selectedRoleId,
-    onError: (e: Error) => showToast(e.message),
     staleTime: 0, refetchOnMount: 'always',
-  } as Parameters<typeof useQuery>[0])
+  } as any)
 
   const insight = insightQ.data
   const hour = new Date().getHours()

@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+﻿import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { apiFetch } from '../lib/api'
 import { showToast } from '../components/Toast'
@@ -15,8 +15,7 @@ export default function Roles() {
   const { data: roles = [], isLoading } = useQuery<Role[]>({
     queryKey: ['roles'],
     queryFn: () => apiFetch('/api/workforce/roles'),
-    onError: (e: Error) => showToast(e.message),
-  } as Parameters<typeof useQuery>[0])
+  } as any)
 
   // Group employer's roles by track. We do NOT pad with canonical tracks
   // anymore — tracks are now dynamic (no fixed list). Empty state is "you
@@ -67,8 +66,7 @@ function CareerTrackSection({ group, navigate }: { group: CareerTrackGroup; navi
   const { data: demand } = useQuery<{ clusterTargets: Record<string, number>; sampleSize: number; totalSeats: number }>({
     queryKey: ['demand', group.careerTrackId],
     queryFn: () => apiFetch(`/api/aggregation/demand/${group.careerTrackId}`),
-    onError: () => null,
-  } as Parameters<typeof useQuery>[0])
+  } as any)
 
   return (
     <section className="bg-white rounded-md border border-rule shadow-card overflow-hidden">

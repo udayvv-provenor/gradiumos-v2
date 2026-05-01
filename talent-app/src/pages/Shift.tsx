@@ -1,4 +1,4 @@
-/* Shift — the headline assessment popup of v3. NOT teaching, NOT learning.
+﻿/* Shift — the headline assessment popup of v3. NOT teaching, NOT learning.
  * The learner is dropped into a single fictional company for ~25 minutes,
  * handles 3-5 heterogeneous artifacts (PR diff, Slack thread, log, customer
  * email, meeting note), gets per-artifact AI grading + an end-of-shift
@@ -78,9 +78,8 @@ export default function Shift() {
   const sq = useQuery({
     queryKey: ['shift-scenario'],
     queryFn: () => apiFetch<ShiftFetchResponse>('/api/talent/me/shift'),
-    onError: (e: Error) => showToast(e.message),
     staleTime: 24 * 60 * 60 * 1000,    // a shift is the same all day
-  } as Parameters<typeof useQuery>[0]) as { data: ShiftFetchResponse | undefined; isLoading: boolean; error: Error | null }
+  } as any) as { data: ShiftFetchResponse | undefined; isLoading: boolean; error: Error | null }
   const scenario = sq.data?.scenario
   const scenarioHash = sq.data?.scenarioHash
   const source: ShiftSource = sq.data?.source ?? (sq.data?.cached ? 'db-cache' : 'live-ai')

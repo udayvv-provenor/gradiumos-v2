@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Calibrate — BC 99-101
  *
  * Per-role calibration page. Shows 8 cluster sliders, peer benchmark P50,
@@ -75,8 +75,7 @@ export default function Calibrate() {
     queryKey: ['calibrate', id],
     queryFn: () => apiFetch(`/api/v1/workforce/roles/${id!}/calibrate`),
     staleTime: 200,
-    onError: (e: Error) => showToast(e.message),
-  } as Parameters<typeof useQuery>[0]) as { data: CalibrateData | undefined; isLoading: boolean; isFetching: boolean; refetch: () => void }
+  } as any) as { data: CalibrateData | undefined; isLoading: boolean; isFetching: boolean; refetch: () => void }
 
   // Initialise sliders once we have server data
   useEffect(() => {
@@ -94,8 +93,7 @@ export default function Calibrate() {
     queryKey: ['institutes', id],
     queryFn: () => apiFetch(`/api/v1/workforce/roles/${id!}/institutes`),
     staleTime: 30_000,
-    onError: (e: Error) => showToast(e.message),
-  } as Parameters<typeof useQuery>[0]) as { data: { institutes: Institute[] } | undefined; isLoading: boolean; isFetching: boolean }
+  } as any) as { data: { institutes: Institute[] } | undefined; isLoading: boolean; isFetching: boolean }
 
   // PATCH targets when slider settles (debounced via slider commit)
   const patchMutation = useMutation<unknown, Error, Record<ClusterCode, number>>({

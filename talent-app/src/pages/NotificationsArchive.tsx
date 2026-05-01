@@ -1,4 +1,4 @@
-/**
+﻿/**
  * BC 131 — Notifications archive page (/notifications/archive)
  * Shows full notification history with ?archive=true.
  */
@@ -36,7 +36,7 @@ export default function NotificationsArchive() {
     queryKey: ['notifications', true],
     queryFn: () => apiFetch<{ notifications: Notification[]; unreadCount: number }>('/api/v1/notifications?archive=true'),
     refetchInterval: 30_000,
-  } as Parameters<typeof useQuery>[0]) as { data: { notifications: Notification[]; unreadCount: number } | undefined; isLoading: boolean }
+  } as any) as { data: { notifications: Notification[]; unreadCount: number } | undefined; isLoading: boolean }
 
   const markRead = useMutation({
     mutationFn: (id: string) =>

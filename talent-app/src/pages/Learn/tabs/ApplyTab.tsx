@@ -1,4 +1,4 @@
-/* ApplyTab — work-simulation scenario for the subtopic.
+﻿/* ApplyTab — work-simulation scenario for the subtopic.
  *
  * v3.1.4 — replaces "COMING SOON" with a real AI-generated scenario.
  * Per Uday's NOT-TEACHING-NOT-LEARNING work-simulation paradigm: place the
@@ -41,8 +41,7 @@ export default function ApplyTab({ subtopicCode, subtopicName }: { subtopicCode:
   const queryResult = useQuery({
     queryKey: ['learn-apply', subtopicCode],
     queryFn: () => apiFetch<{ scenario: ApplyScenario; cached: boolean }>(`/api/talent/me/learn/${subtopicCode}/apply`),
-    onError: (e: Error) => showToast(e.message),
-  } as Parameters<typeof useQuery>[0]) as { data: { scenario: ApplyScenario; cached: boolean } | undefined; isLoading: boolean; error: Error | null }
+  } as any) as { data: { scenario: ApplyScenario; cached: boolean } | undefined; isLoading: boolean; error: Error | null }
   const { data, isLoading, error } = queryResult
 
   const gradeMut = useMutation<GradedResponse, Error, void>({

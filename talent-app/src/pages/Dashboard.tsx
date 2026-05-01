@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+﻿import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../state/AuthContext'
 import { apiFetch } from '../lib/api'
@@ -166,14 +166,12 @@ export default function Dashboard() {
   const { data: signal, isLoading: signalLoading } = useQuery<SignalDashboard>({
     queryKey: ['v1-signal'],
     queryFn: () => apiFetch<SignalDashboard>('/api/v1/talent/me/signal'),
-    onError: (e: Error) => showToast(e.message),
   } as Parameters<typeof useQuery<SignalDashboard>>[0])
 
   // BC 79 — gaps endpoint
   const { data: gapsData } = useQuery<GapsData>({
     queryKey: ['v1-gaps'],
     queryFn: () => apiFetch<GapsData>('/api/v1/talent/me/gaps'),
-    onError: () => null,
   } as Parameters<typeof useQuery<GapsData>>[0])
 
   const clusterBars: ClusterBar[] = (signal as SignalDashboard | undefined)?.clusterBars ?? []

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { apiFetch } from '../../lib/api'
@@ -29,9 +29,8 @@ export default function Subtopic() {
   const { data, isLoading, refetch } = useQuery<SubtopicPayload>({
     queryKey: ['learn-subtopic', subtopic],
     queryFn: () => apiFetch(`/api/talent/me/learn/${subtopic!}`),
-    onError: (e: Error) => showToast(e.message),
     enabled: !!subtopic,
-  } as Parameters<typeof useQuery>[0])
+  } as any)
 
   if (isLoading) return <div className="text-slate text-sm p-4">Loading {subtopic}…</div>
   if (!data)     return <div className="text-red-600 text-sm p-4">Subtopic not found.</div>

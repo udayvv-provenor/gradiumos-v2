@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router-dom'
+﻿import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { apiFetch } from '../lib/api'
 import { showToast } from '../components/Toast'
@@ -30,8 +30,7 @@ export default function PathMap() {
     staleTime: 0,
     refetchOnMount: 'always',
     refetchOnWindowFocus: true,
-    onError: (e: Error) => showToast(e.message),
-  } as Parameters<typeof useQuery>[0])
+  } as any)
 
   const pathQ = useQuery<AugmentationPath>({
     queryKey: ['augmentation-path', careerTrackId],
@@ -39,8 +38,7 @@ export default function PathMap() {
     staleTime: 0,
     refetchOnMount: 'always',
     refetchOnWindowFocus: true,
-    onError: (e: Error) => showToast(e.message),
-  } as Parameters<typeof useQuery>[0])
+  } as any)
 
   if (mapQ.isLoading) return <div className="text-slate text-sm p-4">Computing your path…</div>
   if (!mapQ.data)     return <div className="text-red-600 text-sm p-4">Couldn't load.</div>

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * BC 120 — /applications — Learner's application tracker
  *
  * Lists all applications with status chip, last-updated timestamp,
@@ -95,7 +95,6 @@ export default function Applications() {
   const { data, isLoading } = useQuery<ApplicationsResponse>({
     queryKey: ['v1-my-applications'],
     queryFn: () => apiFetch<ApplicationsResponse>('/api/v1/talent/me/applications'),
-    onError: (e: Error) => showToast(e.message),
   } as Parameters<typeof useQuery<ApplicationsResponse>>[0])
 
   const applications: ApplicationRecord[] = data?.applications ?? []

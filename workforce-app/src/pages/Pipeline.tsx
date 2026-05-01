@@ -1,4 +1,4 @@
-/**
+﻿/**
  * BC 121 — /roles/:id/pipeline — Per-role application pipeline view
  *
  * Stage counts at top (clickable to filter list).
@@ -108,7 +108,6 @@ export default function Pipeline() {
   const { data, isLoading } = useQuery<PipelineResponse>({
     queryKey: ['pipeline', roleId],
     queryFn: () => apiFetch<PipelineResponse>(`/api/v1/workforce/roles/${roleId!}/pipeline`),
-    onError: (e: Error) => showToast(e.message),
   } as Parameters<typeof useQuery<PipelineResponse>>[0])
 
   const counts = data?.counts

@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+﻿import type { ReactNode } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../state/AuthContext'
 import { useQuery } from '@tanstack/react-query'
@@ -40,7 +40,7 @@ export function Sidebar({ bellSlot }: SidebarProps) {
     queryFn: () => apiFetch<AiStatus>('/api/system/ai-status'),
     refetchInterval: 60_000,
     enabled: !!user,
-  } as Parameters<typeof useQuery>[0]) as { data: AiStatus | undefined }
+  } as any) as { data: AiStatus | undefined }
 
   // v3.1.7 — surface any in-progress shift for cross-device resume
   const activeShift = useQuery({
@@ -48,7 +48,7 @@ export function Sidebar({ bellSlot }: SidebarProps) {
     queryFn: () => apiFetch<{ active: { id: string; scenarioCompany: string | null; startedAt: string } | null }>('/api/talent/me/shift/active'),
     refetchInterval: 30_000,
     enabled: !!user,
-  } as Parameters<typeof useQuery>[0]) as { data: { active: { id: string; scenarioCompany: string | null; startedAt: string } | null } | undefined }
+  } as any) as { data: { active: { id: string; scenarioCompany: string | null; startedAt: string } | null } | undefined }
   const inProgress = activeShift.data?.active ?? null
 
   // v3.1.7 — real Signal state (replaces hardcoded "Ready to Generate")
@@ -57,7 +57,7 @@ export function Sidebar({ bellSlot }: SidebarProps) {
     queryFn: () => apiFetch<{ band: string; score: number; unlocked: boolean }>('/api/talent/me/signal'),
     refetchInterval: 60_000,
     enabled: !!user,
-  } as Parameters<typeof useQuery>[0]) as { data: { band: string; score: number; unlocked: boolean } | undefined }
+  } as any) as { data: { band: string; score: number; unlocked: boolean } | undefined }
   const signal = signalQ.data
   const mode = status.data?.mode ?? 'fallback'
   const dotColor = mode === 'live' ? 'bg-green-400' : mode === 'fallback' ? 'bg-red-400' : 'bg-amber-400'

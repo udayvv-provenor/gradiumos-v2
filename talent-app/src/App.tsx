@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
+﻿import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { AuthProvider, useAuth } from './state/AuthContext'
 import { apiFetch } from './lib/api'
@@ -67,7 +67,7 @@ function ResumeFirstGate({ children }: { children: React.ReactNode }) {
     enabled:  !!user && onGatedRoute && !skip,
     staleTime: 0,
     refetchOnMount: 'always',
-  } as Parameters<typeof useQuery>[0]) as { data: { profile: unknown | null } | undefined; isLoading: boolean }
+  } as any) as { data: { profile: unknown | null } | undefined; isLoading: boolean }
 
   // Open routes (non-gated, profile, skip-flag) → always allowed
   if (!user || !onGatedRoute || onProfile || skip) return <>{children}</>

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+﻿import { useState, useRef, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { apiFetch, apiFormFetch } from '../lib/api'
@@ -87,8 +87,7 @@ export default function RoleDetail() {
   const roleQ = useQuery<Role>({
     queryKey: ['role', id],
     queryFn: () => apiFetch(`/api/workforce/roles/${id!}`),
-    onError: (e: Error) => showToast(e.message),
-  } as Parameters<typeof useQuery>[0])
+  } as any)
 
   // v3.1.1 — auto-land on the JD tab when the role has no JD yet (the role
   // is essentially incomplete without it; Overview won't have meaningful
@@ -323,8 +322,7 @@ function GitHubTalentTab({ roleId }: { roleId: string }) {
   const q = useQuery({
     queryKey: ['gh-talent', roleId, city],
     queryFn: () => apiFetch<{ candidates: GitHubCandidate[]; source: 'db-cache'|'live'; hash: string }>(`/api/workforce/roles/${roleId}/github-talent?city=${encodeURIComponent(city)}`),
-    onError: (e: Error) => showToast(e.message),
-  } as Parameters<typeof useQuery>[0]) as { data: { candidates: GitHubCandidate[]; source: 'db-cache'|'live'; hash: string } | undefined; isLoading: boolean; refetch: () => void }
+  } as any) as { data: { candidates: GitHubCandidate[]; source: 'db-cache'|'live'; hash: string } | undefined; isLoading: boolean; refetch: () => void }
 
   return (
     <div>

@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+﻿import { useState, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { apiFetch, apiFormFetch } from '../lib/api'
@@ -22,15 +22,13 @@ export default function CareerTrackDetail() {
   const trackQ = useQuery<CareerTrack>({
     queryKey: ['career-track', id],
     queryFn: () => apiFetch(`/api/campus/career-tracks/${id!}`),
-    onError: (e: Error) => showToast(e.message),
-  } as Parameters<typeof useQuery>[0])
+  } as any)
 
   const learnersQ = useQuery<Learner[]>({
     queryKey: ['track-learners', id],
     queryFn: () => apiFetch(`/api/campus/career-tracks/${id!}/learners`),
     enabled: tab === 'learners',
-    onError: (e: Error) => showToast(e.message),
-  } as Parameters<typeof useQuery>[0])
+  } as any)
 
   // v3.1 — Overview tab now previews the Gap Report inline so the Dean sees the
   // IP signal one click sooner. We fetch only when on Overview to avoid
@@ -39,8 +37,7 @@ export default function CareerTrackDetail() {
     queryKey: ['track-gap-preview', id],
     queryFn: () => apiFetch(`/api/campus/career-tracks/${id!}/gap-report`),
     enabled: tab === 'overview',
-    onError: (e: Error) => showToast(e.message),
-  } as Parameters<typeof useQuery>[0])
+  } as any)
 
   const track = trackQ.data
 

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { apiFetch } from '../lib/api'
@@ -16,8 +16,7 @@ export default function AssessmentTake() {
   const questionQ = useQuery<AssessmentQuestion>({
     queryKey: ['assessment-question', bankItemId],
     queryFn: () => apiFetch(`/api/talent/me/assessment-bank/${bankItemId!}`),
-    onError: (e: Error) => showToast(e.message),
-  } as Parameters<typeof useQuery>[0])
+  } as any)
 
   const submitMut = useMutation<AttemptResult, Error, { answer: string }>({
     mutationFn: data => apiFetch(`/api/talent/me/assessments/${bankItemId!}/attempt`, { method: 'POST', body: JSON.stringify(data) }),

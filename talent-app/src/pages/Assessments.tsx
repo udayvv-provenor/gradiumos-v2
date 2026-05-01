@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { apiFetch } from '../lib/api'
@@ -17,8 +17,7 @@ export default function Assessments() {
   const { data: bank = [], isLoading } = useQuery<AssessmentBankItem[]>({
     queryKey: ['assessment-bank'],
     queryFn: () => apiFetch('/api/talent/me/assessment-bank'),
-    onError: (e: Error) => showToast(e.message),
-  } as Parameters<typeof useQuery>[0])
+  } as any)
 
   const filtered = activeCluster === 'All' ? bank : bank.filter(i => i.cluster === activeCluster)
 
