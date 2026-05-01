@@ -1,0 +1,14 @@
+node_modules
+dist
+*.log
+.env
+.env.local
+uploads/
+*.tsbuildinfo
+# Ed25519 signing keys — never commit private keys
+.keys/
+# Local AI-cache / public data cache
+data/public/
+# Coverage & test artifacts
+coverage/
+*.lcov
