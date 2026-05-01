@@ -1,6 +1,6 @@
 import type { AuthTokens, User } from '../types'
 
-const BASE = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:4002'
+const BASE = (import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:4002').replace(/^\uFEFF/, '')
 
 /* ─── Token storage ────────────────────────────────────────────────────── */
 
