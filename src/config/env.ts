@@ -31,6 +31,8 @@ const EnvSchema = z.object({
   FEATURE_PROCTORING_ENABLED: z.string().optional(),
   // BC 46 — Resend email integration (optional; emails are skipped when absent)
   RESEND_API_KEY: z.string().optional(),
+  // Option A — /metrics endpoint bearer token (optional; endpoint is open when absent)
+  METRICS_TOKEN: z.string().optional(),
 });
 
 const parsed = EnvSchema.safeParse(process.env);

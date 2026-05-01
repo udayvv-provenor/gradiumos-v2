@@ -101,8 +101,17 @@ export function buildApp() {
     next();
   });
 
-  // BC 31 — /metrics endpoint (no auth — gate at infra/network level in prod)
-  app.get('/metrics', async (_req, res) => {
+  // BC 31 — /metrics endpoint (gated by METRICS_TOKEN bearer token when set)
+  app.get('/metrics', async (req, res) => {
+    const metricsToken = process.env['METRICS_TOKEN'];
+    if (metricsToken) {
+      const authHeader = req.headers['authorization'] ?? '';
+      const provided = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : '';
+      if (!provided || provided !== metricsToken) {
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
+      }
+    }
     res.set('Content-Type', register.contentType);
     res.end(await register.metrics());
   });

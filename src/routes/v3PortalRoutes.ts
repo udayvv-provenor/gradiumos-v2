@@ -647,7 +647,7 @@ router.get('/workforce/roles/:id', requireRole('TA_LEAD'), asyncHandler(async (r
   const employerId = req.auth!.emp!;
   const role = await prisma.employerRole.findFirst({
     where: { id: req.params.id, employerId },
-    include: { careerTrack: true, _count: { select: { pipelines: true } } },
+    include: { careerTrack: true, shortlists: { select: { state: true }, where: { state: 'piped' } } },
   });
   if (!role) throw new AppError('NOT_FOUND', 'Role not found');
   // v3.1.1 — TWO bug fixes:
@@ -676,7 +676,7 @@ router.get('/workforce/roles/:id', requireRole('TA_LEAD'), asyncHandler(async (r
     careerTrackName:       role.careerTrack?.name ?? null,
     careerTrackCode:       role.careerTrack?.code ?? null,
     seatsPlanned:          role.seatsPlanned,
-    applicantCount:        role._count.pipelines,
+    applicantCount:        role.shortlists.length,
     createdAt:             role.createdAt.toISOString(),
     jdText:                role.jdText,
     clusterTargets:        flatTargets,

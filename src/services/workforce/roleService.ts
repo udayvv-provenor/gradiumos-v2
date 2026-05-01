@@ -50,11 +50,13 @@ export async function listRoles(employerId: string) {
     where: { employerId },
     include: {
       careerTrack: true,
-      _count: { select: { pipelines: true } },
+      // BC-fix: count Shortlist rows with state='piped' (learner-initiated applications)
+      // _count.pipelines counted PipelineCandidate rows (employer-initiated) — wrong model
+      shortlists: { select: { state: true }, where: { state: 'piped' } },
     },
     orderBy: { createdAt: 'desc' },
   });
-  return rows.map((r) => toRoleDTO(r, r._count.pipelines));
+  return rows.map((r) => toRoleDTO(r, r.shortlists.length));
 }
 
 export async function getRole(employerId: string, roleId: string) {
@@ -62,11 +64,11 @@ export async function getRole(employerId: string, roleId: string) {
     where: { id: roleId },
     include: {
       careerTrack: true,
-      _count: { select: { pipelines: true } },
+      shortlists: { select: { state: true }, where: { state: 'piped' } },
     },
   });
   if (!r || r.employerId !== employerId) throw new AppError('NOT_FOUND', 'Role not found');
-  return toRoleDTO(r, r._count.pipelines);
+  return toRoleDTO(r, r.shortlists.length);
 }
 
 /**
